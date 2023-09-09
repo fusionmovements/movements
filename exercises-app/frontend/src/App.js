@@ -29,13 +29,13 @@ function App() {
     <div>
       
 
-<Navbar bg="light" expand="lg">
-        <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+<Navbar sticky="top" className="m-auto" bg="light" expand="lg">
+        <Navbar.Brand href="#home" >   Fusionmovements</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link>
-              <Link to={"/exercises"}> Exercises </Link>
+              {/* <Link to={"/exercises"}> Exercises </Link> */}
               </Nav.Link>
 
             {/* <Nav.Link>

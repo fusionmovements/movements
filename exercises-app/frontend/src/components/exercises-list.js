@@ -131,7 +131,7 @@ return(
         <Container>
             <Form>
                 <Row>
-                    <Col>
+                    <div className="d-grid gap-2">
                     <Form.Group>
                         <Form.Control
                         type="text"
@@ -139,7 +139,6 @@ return(
                         value = {searchName}
                         onChange={onChangeSearchName}/>
                     </Form.Group>
-                    <p></p>
                         <Button
                         className="my-button"
                         variant="primary"
@@ -147,7 +146,7 @@ return(
                         onClick={findByName}>
                             Search
                         </Button>
-                    </Col>
+                        </div>
                     <Col>
                     {/* Dropdown Groups */}
                      {/* <Form.Group>
@@ -173,15 +172,16 @@ return(
                 </Row>
             </Form>
             <p></p>
+            <p></p>
             <Row>
             <Col>
-      <ButtonGroup>
+      {/* <ButtonGroup> */}
         {groups.map(group => (
           <Button
           className="my-button"
             key={group}
             type="checkbox"
-            variant={selectedGroups.includes(group) ? 'warning' : 'outline-warning'}
+            variant={selectedGroups.includes(group) ? 'dark' : 'outline-dark'}
             value={group}
             onClick={() => {
                 handleGroupToggle(group);
@@ -191,7 +191,7 @@ return(
             {group}
           </Button>
         ))}
-      </ButtonGroup>
+      {/* </ButtonGroup> */}
       
       {/* <p>Selected Groups: {selectedGroups.join(', ')}</p> */}
             </Col>
@@ -200,13 +200,13 @@ return(
 <p></p>
             <Row>
             <Col>
-            <ButtonGroup>
+            {/* <ButtonGroup> */}
                 {equipments.map(equipment => (
                     <Button
-                    classname="my-button"
+                    className="my-button"
                     key={equipment}
                     type="checkbox"
-                    variant={selectedEquipments.includes(equipment) ? 'primary' : 'outline-primary'}
+                    variant={selectedEquipments.includes(equipment) ? 'dark' : 'outline-dark'}
                     value={equipment}
 
                     onClick={() => {
@@ -216,13 +216,15 @@ return(
                         {equipment}
                     </Button>
                 ))}
-            </ButtonGroup>
+            {/* </ButtonGroup> */}
             </Col>
             </Row>
                         <p></p>
 <Row>
                                 <Col>
+                                <div className="d-grid gap-2">
                                     <Button
+                                    //class = "btn btn-default btn-block"
                                     variant="primary"
                                     type="button"
                                     onClick = { () =>{
@@ -230,11 +232,13 @@ return(
                                     }}>
                                     Search
                                     </Button>
+                                    </div>
                 </Col>
      <p></p>
      <Col>
+     <div className="d-grid gap-2">
 <Button
-  variant="primary"
+  variant="outline-primary"
   type="button"
   onClick={() => {
     const shuffled = shuffle([...exercises]); // Create a shuffled copy of the exercises
@@ -243,13 +247,15 @@ return(
 >
   Shuffle!
 </Button>
+</div>
 </Col>
 </Row>
 <p></p>
-            <Row>
+<Row>
                 {exercises.map((exercise) => (
           <Col key={exercise._id}>
-                        <Card style={{width:'18rem'}}>
+
+                            <Card className="text-center" style={{width:'18rem', margin:'5px 5px 5px 5px'}}>
                             {/* <Card.Img src={exercise.poster+"/100px180"} /> */}
                             <Card.Body>
                                 <Card.Title>{exercise.name}</Card.Title>
@@ -261,7 +267,7 @@ return(
                                 {/* <Card.Text>{exercise.plot}</Card.Text> */}
                                 {/* <Link to ={"/exercises/"+exercise._id}>View Reviews</Link> */}
                             </Card.Body>
-                        </Card>
+                        </Card>                        
                         </Col>
                     ))
                 }

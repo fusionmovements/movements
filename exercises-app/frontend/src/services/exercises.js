@@ -36,7 +36,7 @@ getGroups(){
 }
 
 getEquipments(){
-    return axios.get(`https://backend-3s98.onrender.comapi/v1/exercises/equipments`)
+    return axios.get(`https://backend-3s98.onrender.com/api/v1/exercises/equipments`)
 }
 
 

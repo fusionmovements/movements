@@ -41,6 +41,7 @@ const ExercisesList = props => {
     }
 
 useEffect(()=>{
+    retrieveExercises()
     retrieveGroups()
     retrieveEquipments()
     scrollToBottom()

@@ -8,6 +8,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
+import { useRef } from 'react';//jumping to specific element
 
 
 const ExercisesList = props => {
@@ -15,6 +16,11 @@ const ExercisesList = props => {
     const [searchName,setSearchName]=useState("")
     const [groups,setGroups]=useState(["All Groups"])
     const [equipments,setEquipments]=useState([])
+
+    const ref = useRef(null);
+    const handleClick = () => {
+        ref.current?.scrollIntoView({ behavior: 'smooth' });
+      };
     
 
     function shuffle(a) {
@@ -228,7 +234,8 @@ return(
                                     variant="primary"
                                     type="button"
                                     onClick = { () =>{
-                                        findByGroupEquipmentArray()
+                                        findByGroupEquipmentArray();
+                                        handleClick();
                                     }}>
                                     Search
                                     </Button>
@@ -236,13 +243,16 @@ return(
                 </Col>
      <p></p>
      <Col>
-     <div className="d-grid gap-2">
+     <div className="d-grid gap-2"
+  sticky="top">
 <Button
+ ref={ref}
   variant="outline-primary"
   type="button"
   onClick={() => {
     const shuffled = shuffle([...exercises]); // Create a shuffled copy of the exercises
     setExercises(shuffled); // Update the state with the shuffled exercises
+    handleClick();
   }}
 >
   Shuffle!
@@ -251,11 +261,13 @@ return(
 </Col>
 </Row>
 <p></p>
+
+
 <Row>
                 {exercises.map((exercise) => (
           <Col key={exercise._id}>
 
-                            <Card className="text-center" style={{width:'18rem', margin:'5px 5px 5px 5px'}}>
+                            <Card className="text-center mx-auto" style={{width:'25rem', margin:'5px'}}>
                             {/* <Card.Img src={exercise.poster+"/100px180"} /> */}
                             <Card.Body>
                                 <Card.Title>{exercise.name}</Card.Title>
@@ -271,7 +283,7 @@ return(
                         </Col>
                     ))
                 }
-            </Row>
+</Row>
 
         </Container>
     </div>

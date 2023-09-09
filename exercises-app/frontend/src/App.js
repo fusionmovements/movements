@@ -4,6 +4,7 @@ import React from 'react'
 import { BrowserRouter, Switch, Route, Link} from "react-router-dom"
 import "bootstrap/dist/css/bootstrap.min.css"
 
+
 //import AddReview from "./components/add-review"
 import ExercisesList from './components/exercises-list'
 import Exercise from './components/exercise';

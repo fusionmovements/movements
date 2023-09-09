@@ -17,10 +17,16 @@ const ExercisesList = props => {
     const [groups,setGroups]=useState(["All Groups"])
     const [equipments,setEquipments]=useState([])
 
-    const ref = useRef(null);
-    const handleClick = () => {
-        ref.current?.scrollIntoView({ behavior: 'smooth' });
-      };
+    // const ref = useRef(null);
+    // const handleClick = () => {
+    //     ref.current?.scrollIntoView({ behavior: 'smooth' });
+    //   };
+
+  const bottomEl = useRef(null);
+
+  const scrollToBottom = () => {
+    bottomEl?.current?.scrollIntoView({ behavior: 'smooth' });
+  };
     
 
     function shuffle(a) {
@@ -37,6 +43,7 @@ const ExercisesList = props => {
 useEffect(()=>{
     retrieveGroups()
     retrieveEquipments()
+    scrollToBottom()
 },[])
 
 const retrieveExercises = () => {//for findByGroup
@@ -234,8 +241,9 @@ return(
                                     variant="primary"
                                     type="button"
                                     onClick = { () =>{
+                                        scrollToBottom();
                                         findByGroupEquipmentArray();
-                                        handleClick();
+                                        scrollToBottom();
                                     }}>
                                     Search
                                     </Button>
@@ -245,14 +253,14 @@ return(
      <Col>
      <div className="d-grid gap-2"
   sticky="top">
+    <div ref={bottomEl}></div>
 <Button
- ref={ref}
   variant="outline-primary"
   type="button"
   onClick={() => {
+    scrollToBottom();
     const shuffled = shuffle([...exercises]); // Create a shuffled copy of the exercises
     setExercises(shuffled); // Update the state with the shuffled exercises
-    handleClick();
   }}
 >
   Shuffle!
@@ -267,7 +275,7 @@ return(
                 {exercises.map((exercise) => (
           <Col key={exercise._id}>
 
-                            <Card className="text-center mx-auto" style={{width:'25rem', margin:'5px'}}>
+                            <Card className="text-center mx-auto" style={{width:'18rem', margin:'5px'}}>
                             {/* <Card.Img src={exercise.poster+"/100px180"} /> */}
                             <Card.Body>
                                 <Card.Title>{exercise.name}</Card.Title>

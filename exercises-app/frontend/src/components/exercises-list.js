@@ -94,9 +94,9 @@ const ExercisesList = props => {
     const find = (query, by) => {
         ExerciseDataService.find(query, by)
             .then(res => {
-                console.log(res.data)
+                const shuffled = shuffle([...res.data.exercises]); // Create a shuffled copy of the exercises
+                setExercises(shuffled); // Update the state with the shuffled exercises
                 setExercises(res.data.exercises)
-                console.log(exercises)
             }).catch(e => {
                 console.log(e)
             })
@@ -105,9 +105,9 @@ const ExercisesList = props => {
     const find2 = (query1, by1, query2, by2) => {
         ExerciseDataService.find2(query1, by1, query2, by2)
             .then(res => {
-                console.log(res.data)
-                setExercises(res.data.exercises)
-                console.log(exercises)
+                const shuffled = shuffle([...res.data.exercises]); // Create a shuffled copy of the exercises
+                setExercises(shuffled); // Update the state with the shuffled exercises
+                //setExercises(res.data.exercises)
             }).catch(e => {
                 console.log(e)
             })
@@ -214,7 +214,6 @@ const ExercisesList = props => {
                                         value={group}
                                         onClick={() => {
                                             handleGroupToggle(group);
-
                                         }}
                                     >
                                         {group}
@@ -257,8 +256,6 @@ const ExercisesList = props => {
                                         onClick={() => {
                                             findByGroupEquipmentArray();
                                             scrollToBottom();
-                                            const shuffled = shuffle([...exercises]); // Create a shuffled copy of the exercises
-                                            setExercises(shuffled); // Update the state with the shuffled exercises
                                         }}>
                                         Search
                                     </Button>

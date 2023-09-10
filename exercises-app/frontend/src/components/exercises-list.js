@@ -9,7 +9,7 @@ import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import { useRef } from 'react';//jumping to specific element
-
+import Collapse from 'react-bootstrap/Collapse'
 
 const ExercisesList = props => {
     const [exercises,setExercises]=useState([])
@@ -17,18 +17,17 @@ const ExercisesList = props => {
     const [groups,setGroups]=useState(["All Groups"])
     const [equipments,setEquipments]=useState([])
 
-    // const ref = useRef(null);
-    // const handleClick = () => {
-    //     ref.current?.scrollIntoView({ behavior: 'smooth' });
-    //   };
+    const [open, setOpen] = useState({});
 
-  const bottomEl = useRef(null);
 
+  const bottomEl = useRef(null);//for Jumping to exercises bottomEl
   const scrollToBottom = () => {
     bottomEl?.current?.scrollIntoView({ behavior: 'smooth' });
   };
     
-
+  function handleCollapse(id) {
+            setOpen(prevState => ({...prevState, [id]: !prevState[id]}))
+        }
     function shuffle(a) {
         var j, x, i;
         for (i = a.length - 1; i > 0; i--) {
@@ -277,14 +276,50 @@ return(
           <Col key={exercise._id}>
 
                             <Card className="text-center mx-auto" style={{width:'18rem', margin:'5px'}}>
+                            
                             {/* <Card.Img src={exercise.poster+"/100px180"} /> */}
                             <Card.Body>
                                 <Card.Title>{exercise.name}</Card.Title>
                                 <Card.Text>
-                                    {exercise.group.join(', ')}
-                                    <br></br>
-                                    {exercise.equipment.join(' or ')}
+                                <Row>
+                                <Card.Text className="text-center">{exercise.equipment.join(' or ')}</Card.Text>
+  {/* <Col xs="4"> Adjust the column width as needed */}
+    {/* <Card.Text>{exercise.group.join(', ')}</Card.Text> */}
+  {/* </Col> */}
+  {/* <Col xs="8"> Adjust the column width as needed */}
+  <div className="border border-dark rounded-2" onClick={()=>handleCollapse(exercise._id)}>how to
+  <Collapse in={open[exercise._id]}>
+  <div key={exercise._id} id="example-collapse-text" className="collapsedText">
+  {exercise.howto ? (
+    <ul style={{ textAlign: 'left', listStyleType: 'disc', paddingLeft: '20px' }}>
+      {exercise.howto.map((step, index) => (
+        <li key={index}>{step}</li>
+      ))}
+    </ul>
+  ) : (
+    <p>explanation coming soon.</p>
+  )}
+  </div>
+ </Collapse></div>
+
+
+  {/* </Col> */}
+</Row>
+
+
+
+
+ {/* <div onClick={() => handleCollapse(exercise._id)} style={{ cursor: 'pointer' }}>
+  how to
+</div>
+<Collapse in={open[exercise._id]}>
+  <div key={exercise._id} id="example-collapse-text" className="collapsedText">
+    {exercise.level}
+  </div>
+</Collapse> */}
+ 
                                 </Card.Text>
+                                 
                                 {/* <Card.Text>{exercise.plot}</Card.Text> */}
                                 {/* <Link to ={"/exercises/"+exercise._id}>View Reviews</Link> */}
                             </Card.Body>

@@ -255,9 +255,10 @@ const ExercisesList = props => {
                                         variant="primary"
                                         type="button"
                                         onClick={() => {
-                                            scrollToBottom();
                                             findByGroupEquipmentArray();
                                             scrollToBottom();
+                                            const shuffled = shuffle([...exercises]); // Create a shuffled copy of the exercises
+                                            setExercises(shuffled); // Update the state with the shuffled exercises
                                         }}>
                                         Search
                                     </Button>

@@ -4,7 +4,7 @@ import ExercisesDAO from '../dao/exercisesDAO.js'
 export default class ExercisesController{
 
 static async apiGetExercises(req,res,next){
-        const exercisesPerPage = req.query.exercisesPerPage ? parseInt(req.query.exercisesPerPage):50
+        const exercisesPerPage = req.query.exercisesPerPage ? parseInt(req.query.exercisesPerPage):30
         const page = req.query.page ? parseInt(req.query.page):0
 
     const filters = {};

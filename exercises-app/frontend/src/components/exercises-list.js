@@ -48,7 +48,7 @@ const ExercisesList = props => {
         setTimeout(() => {
             setLoading(false)
         }, 5000)
-        retrieveExercises()
+        //retrieveExercises()
         retrieveGroups()
         retrieveEquipments()
         scrollToBottom()

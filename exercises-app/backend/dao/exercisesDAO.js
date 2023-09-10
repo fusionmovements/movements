@@ -9,7 +9,7 @@ export default class ExercisesDAO{
         }
         try{
         //exercises = await conn.db(process.env.MOVIEREVIEWS_NS).collection('Fit_collec')
-        exercises = await conn.db(process.env.MOVIEREVIEWS_NS).collection('exercises')
+        exercises = await conn.db(process.env.MOVIEREVIEWS_NS).collection('exercises_new')
         
         }
         catch(e){

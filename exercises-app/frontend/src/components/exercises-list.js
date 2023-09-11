@@ -11,6 +11,7 @@ import Card from 'react-bootstrap/Card';
 import { useRef } from 'react';//jumping to specific element
 import Collapse from 'react-bootstrap/Collapse'
 import { ThreeDots } from 'react-loader-spinner'
+import { Shuffle } from 'lucide-react';
 
 
 const ExercisesList = props => {
@@ -25,9 +26,18 @@ const ExercisesList = props => {
 
 
     const bottomEl = useRef(null);//for Jumping to exercises bottomEl
+    
+    useEffect(() => {
+        scrollToBottom();
+    }, [exercises]);
+
     const scrollToBottom = () => {
-        bottomEl?.current?.scrollIntoView({ behavior: 'smooth' });
-    };
+        if (bottomEl.current) {
+            bottomEl.current.scrollIntoView({ behavior: 'smooth' });
+          }
+        };
+    //     bottomEl?.current?.scrollIntoView({ behavior: 'smooth' });
+    // };
 
     function handleCollapse(id) {
         setOpen(prevState => ({ ...prevState, [id]: !prevState[id] }))
@@ -51,7 +61,7 @@ const ExercisesList = props => {
         //retrieveExercises()
         retrieveGroups()
         retrieveEquipments()
-        scrollToBottom()
+        //scrollToBottom()
     }, [])
 
     const retrieveExercises = () => {//for findByGroup
@@ -249,13 +259,14 @@ const ExercisesList = props => {
                         <Row>
                             <Col>
                                 <div className="d-grid gap-2">
+                                <div ref={bottomEl}></div>
                                     <Button
                                         //class = "btn btn-default btn-block"
                                         variant="primary"
                                         type="button"
                                         onClick={() => {
                                             findByGroupEquipmentArray();
-                                            scrollToBottom();
+                                            //scrollToBottom();
                                         }}>
                                         Search
                                     </Button>
@@ -265,17 +276,17 @@ const ExercisesList = props => {
                             <Col>
                                 <div className="d-grid gap-2"
                                     sticky="top">
-                                    <div ref={bottomEl}></div>
+                                    
                                     <Button
                                         variant="outline-primary"
                                         type="button"
                                         onClick={() => {
-                                            scrollToBottom();
+                                            //scrollToBottom();
                                             const shuffled = shuffle([...exercises]); // Create a shuffled copy of the exercises
                                             setExercises(shuffled); // Update the state with the shuffled exercises
                                         }}
                                     >
-                                        Shuffle!
+                                        <Shuffle />
                                     </Button>
                                 </div>
                             </Col>

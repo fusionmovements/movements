@@ -11,7 +11,7 @@ import Card from 'react-bootstrap/Card';
 import { useRef } from 'react';//jumping to specific element
 import Collapse from 'react-bootstrap/Collapse'
 import { ThreeDots } from 'react-loader-spinner'
-import { Shuffle } from 'lucide-react';
+import { Shuffle, Search } from 'lucide-react';
 
 
 const ExercisesList = props => {
@@ -184,7 +184,7 @@ const ExercisesList = props => {
                                         variant="primary"
                                         type="button"
                                         onClick={findByName}>
-                                        Search
+                                        <Search />
                                     </Button>
                                 </div>
                                 <Col>
@@ -268,7 +268,7 @@ const ExercisesList = props => {
                                             findByGroupEquipmentArray();
                                             //scrollToBottom();
                                         }}>
-                                        Search
+                                        <Search />
                                     </Button>
                                 </div>
                             </Col>

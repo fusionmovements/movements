@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ExerciseDataService from "../services/exercises.js"
+import "../App.css";
 
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -25,8 +26,14 @@ const ExercisesList = props => {
     const [open, setOpen] = useState({});
 
 
+
+
+
+
+
+
     const bottomEl = useRef(null);//for Jumping to exercises bottomEl
-    
+
     useEffect(() => {
         scrollToBottom();
     }, [exercises]);
@@ -34,8 +41,8 @@ const ExercisesList = props => {
     const scrollToBottom = () => {
         if (bottomEl.current) {
             bottomEl.current.scrollIntoView({ behavior: 'smooth' });
-          }
-        };
+        }
+    };
     //     bottomEl?.current?.scrollIntoView({ behavior: 'smooth' });
     // };
 
@@ -159,8 +166,45 @@ const ExercisesList = props => {
         }
     };
 
+    const [activeTab, setActiveTab] = useState(1);
+
+    const handleTabClick = (tabNumber) => {
+        setActiveTab(tabNumber);
+    };
+
     return (
+
         <div>
+            {/* <div>
+      <div className="tab-buttons">
+        <button
+          onClick={() => handleTabClick(1)}
+          className={activeTab === 1 ? "active" : ""}
+        >
+          Tab 1
+        </button>
+        <button
+          onClick={() => handleTabClick(2)}
+          className={activeTab === 2 ? "active" : ""}
+        >
+          Tab 2
+        </button>
+        <button
+          onClick={() => handleTabClick(3)}
+          className={activeTab === 3 ? "active" : ""}
+        >
+          Tab 3
+        </button>
+      </div>
+
+      <div className="tab-content">
+        {activeTab === 1 && <div>Content for Tab 1</div>}
+        {activeTab === 2 && <div>Content for Tab 2</div>}
+        {activeTab === 3 && <div>Content for Tab 3</div>}
+      </div>
+    </div> */}
+
+
             {
                 loading ?
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
@@ -220,7 +264,28 @@ const ExercisesList = props => {
                                         className="my-button"
                                         key={group}
                                         type="checkbox"
-                                        variant={selectedGroups.includes(group) ? 'dark' : 'outline-dark'}
+                                        //variant={selectedGroups.includes(group) ? 'dark' : 'outline-dark'}
+                                        variant={
+                                            selectedGroups.length === 0
+                                                ? 'outline-dark'
+                                                : selectedGroups.includes(group)
+                                                    ? group === 'cardio'
+                                                        ? 'primary'
+                                                        : group === 'leg'
+                                                            ? 'secondary'
+                                                            : group === 'core'
+                                                                ? 'success'
+                                                                : group === 'push'
+                                                                    ? 'warning'
+                                                                    : group === 'pull'
+                                                                        ? 'danger'
+                                                                        : group === 'mobility'
+                                                                            ? 'info'
+                                                                            : group === 'walk'
+                                                                                ? 'dark'
+                                                                                : 'outline-dark'
+                                                    : 'outline-dark'
+                                        }
                                         value={group}
                                         onClick={() => {
                                             handleGroupToggle(group);
@@ -259,7 +324,7 @@ const ExercisesList = props => {
                         <Row>
                             <Col>
                                 <div className="d-grid gap-2">
-                                <div ref={bottomEl}></div>
+                                    <div ref={bottomEl}></div>
                                     <Button
                                         //class = "btn btn-default btn-block"
                                         variant="primary"
@@ -276,7 +341,7 @@ const ExercisesList = props => {
                             <Col>
                                 <div className="d-grid gap-2"
                                     sticky="top">
-                                    
+
                                     <Button
                                         variant="outline-primary"
                                         type="button"
@@ -298,47 +363,71 @@ const ExercisesList = props => {
                             {exercises.map((exercise) => (
                                 <Col key={exercise._id}>
 
-                                    <Card className="text-center mx-auto" style={{ width: '18rem', margin: '5px' }}>
+                                    <Card
+                                        className={"text-center mx-auto border-2"}
+                                        border={
+                                            exercise.group.includes('cardio')
+                                            ? 'primary'
+                                      : exercise.group.includes('leg')
+                                    ? 'secondary'
+                                    : exercise.group.includes('core')
+                                    ? 'success'
+                                    : exercise.group.includes('push')
+                                    ? 'warning'
+                                    : exercise.group.includes('pull')
+                                    ? 'danger'
+                                    : exercise.group.includes('mobility')
+                                    ? 'info'
+                                    : exercise.group.includes('walk')
+                                    ? 'dark'
+                                    : 'dark'
+                                     }
+                                    style={{ width: '20rem', margin: '5px' }}>
 
-                                        {/* <Card.Img src={exercise.poster+"/100px180"} /> */}
-                                        <Card.Body>
-                                            <Card.Title>{exercise.name}</Card.Title>
-                                            <Card.Text>
-                                                <Row>
-                                                    <Card.Text className="text-center">{exercise.equipment.join(' or ')}</Card.Text>
+                                    {/* <Card.Img src={exercise.poster+"/100px180"} /> */}
+                                    <Card.Body>
+                                        <Card.Title
+                                            style={{
 
-                                                    <div className="border border-dark rounded-2" onClick={() => handleCollapse(exercise._id)}>how to
-                                                        <Collapse in={open[exercise._id]}>
-                                                            <div key={exercise._id} id="example-collapse-text" className="collapsedText">
-                                                                {exercise.howto ? (
-                                                                    <ul style={{ textAlign: 'left', listStyleType: 'disc', paddingLeft: '20px' }}>
-                                                                        {exercise.howto.map((step, index) => (
-                                                                            <li key={index}>{step}</li>
-                                                                        ))}
-                                                                    </ul>
-                                                                ) : (
-                                                                    <p>explanation coming soon.</p>
-                                                                )}
-                                                            </div>
-                                                        </Collapse></div>
-                                                </Row>
+                                            }}
+                                        >{exercise.name}</Card.Title>
+                                        <Card.Text>
+                                            <Row>
+                                                <Card.Text className="text-center">{exercise.equipment.join(' or ')}</Card.Text>
+
+                                                <div className="border border-dark rounded-2"
+                                                    onClick={() => handleCollapse(exercise._id)}>how to
+                                                    <Collapse in={open[exercise._id]}>
+                                                        <div key={exercise._id} id="example-collapse-text" className="collapsedText">
+                                                            {exercise.howto ? (
+                                                                <ul style={{ textAlign: 'left', listStyleType: 'disc', paddingLeft: '20px' }}>
+                                                                    {exercise.howto.map((step, index) => (
+                                                                        <li key={index}>{step}</li>
+                                                                    ))}
+                                                                </ul>
+                                                            ) : (
+                                                                <p>explanation coming soon.</p>
+                                                            )}
+                                                        </div>
+                                                    </Collapse></div>
+                                            </Row>
 
 
-                                            </Card.Text>
+                                        </Card.Text>
 
-                                            {/* <Card.Text>{exercise.plot}</Card.Text> */}
-                                            {/* <Link to ={"/exercises/"+exercise._id}>View Reviews</Link> */}
-                                        </Card.Body>
-                                    </Card>
+                                        {/* <Card.Text>{exercise.plot}</Card.Text> */}
+                                        {/* <Link to ={"/exercises/"+exercise._id}>View Reviews</Link> */}
+                                    </Card.Body>
+                                </Card>
                                 </Col>
-                            ))
+                        ))
                             }
-                        </Row>
+                    </Row>
 
                     </Container>
 
             }
-        </div>
+        </div >
     );
 }
 

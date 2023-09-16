@@ -59,3 +59,8 @@
 .settingsDiv {
   min-height: 50 px;
 }
+
+.btn:hover { 
+  --bs-btn-hover-color: var(--bs-btn-color);
+  --bs-btn-hover-bg: var(--bs-btn-bg);
+}

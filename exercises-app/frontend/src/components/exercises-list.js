@@ -17,6 +17,10 @@ import { shuffle, scrollToBottom } from "./features"
 
 const ExercisesList = props => {
     const [loading, setLoading] = useState(false)
+    const buttonRef = useRef(null)
+    function handleClickBlur(){
+        buttonRef.current.blur()
+    }
 
     const [exercises, setExercises] = useState([])
     const [searchName, setSearchName] = useState("")
@@ -202,7 +206,7 @@ const ExercisesList = props => {
                             <Col>
                                 {groups.map(group => (
                                     <Button
-                                        className="my-button"
+                                        className="btn"
                                         key={group}
                                         type="checkbox"
                                         variant={

@@ -22,7 +22,7 @@ find2(query1,by1,query2,by2){
 }
 
 find3(query1,by1,query2,by2,query3,by3,count){
-    return axios.get(`https://backend-3s98.onrender.com/api/v1/exercises?${by1}=${query1}&${by2}=${query2}`)
+    return axios.get(`https://backend-3s98.onrender.com/api/v1/exercises?${by1}=${query1}&${by2}=${query2}&${by3}=${query3}&excNum=${count}`)
     // return axios.get(`http://localhost:4000/api/v1/exercises?${by1}=${query1}&${by2}=${query2}&${by3}=${query3}&excNum=${count}`)
 }
 

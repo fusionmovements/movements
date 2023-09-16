@@ -1,6 +1,17 @@
 import mongodb from "mongodb"
 const ObjectId = mongodb.ObjectId
 
+function shuffle(a) {
+    var j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
+    return a;
+  }
+
 let exercises
 export default class ExercisesDAO{
     static async injectDB(conn){
@@ -21,7 +32,7 @@ export default class ExercisesDAO{
 static async getExercises({
     filters = null,
     page = 0,
-    exercisesPerPage = 20
+    excNum = 20
     } = {}){
 
     let query
@@ -29,7 +40,45 @@ static async getExercises({
     if(filters){        
         if("name" in filters){
             query = {$text: {$search:filters['name']}}
-        } else if ("groups" in filters && "equipments" in filters) {
+        } else if ("groups" in filters && "equipments" in filters && "levels" in filters) {
+            filters.groups = filters.groups.split(',')
+            filters.equipments = filters.equipments.split(',')
+            filters.levels = filters.levels.split(',').map(i=>Number(i))
+            query = 
+                {$and: [
+                    {
+                "group": { $in: filters.groups },
+                "equipment": { $in: filters.equipments },
+                "level": { $in : filters.levels}
+                }
+                        ]}
+            console.log("2.", query)
+
+        } else if ("groups" in filters && "levels" in filters) {
+            filters.groups = filters.groups.split(',')
+            filters.levels = filters.levels.split(',').map(i=>Number(i))
+            query = 
+                {$and: [
+                    {
+                "group": { $in: filters.groups },
+                "level": { $in : filters.levels}
+                }
+                        ]}
+            console.log("2.", query)
+        
+        } else if ("equipments" in filters && "levels" in filters) {
+            filters.equipments = filters.equipments.split(',')
+            filters.levels = filters.levels.split(',').map(i=>Number(i))
+            query = 
+                {$and: [
+                    {
+                "equipment": { $in: filters.equipments },
+                "level": { $in : filters.levels}
+                }
+                        ]}
+            console.log("2.", query)
+                
+        }else if ("groups" in filters && "equipments" in filters) {
             filters.groups = filters.groups.split(',')
             filters.equipments = filters.equipments.split(',')
             query = 
@@ -51,23 +100,40 @@ static async getExercises({
             filters.equipments = filters.equipments.split(',')
             query = {"equipment":{$in:filters.equipments}}
             console.log("2.",query)
-        }
-        }
 
-        let cursor
-        try{
-                cursor = await exercises.find(query).limit(exercisesPerPage).skip(exercisesPerPage * page)
-                const exercisesList = await cursor.toArray()
-                  // Shuffle the exercisesList
-                //shuffle(exercisesList);
-                const totalNumExercises = await exercises.countDocuments(query)
-                return{exercisesList, totalNumExercises}
-            }
-            catch(e){
-                console.error('3. Unable to issue find coomand, ${e}')
-                return{exercisesList:[], totalNumExercises: 0}
-            }
+        }else if("levels" in filters){
+            filters.levels = filters.levels.split(',').map(i=>Number(i))
+            query = {"level":{$in:filters.levels}}
+            console.log("2.",query)
+        }}
+
+        // let cursor
+        // try{
+        //         cursor = await exercises.find(query).limit(excNum).skip(excNum * page)
+        //         const exercisesList = await cursor.toArray()
+        //           // Shuffle the exercisesList
+        //         //shuffle(exercisesList);
+        //         const totalNumExercises = await exercises.countDocuments(query)
+        //         return{exercisesList, totalNumExercises}
+        //     }
+        //     catch(e){
+        //         console.error('3. Unable to issue find coomand, ${e}')
+        //         return{exercisesList:[], totalNumExercises: 0}
+        //     }
+        // }
+
+        let cursor;
+        try {
+          cursor = await exercises.find(query);
+          const shuffledExercisesList = shuffle(await cursor.toArray());
+          const selectedExercisesList = shuffledExercisesList.slice(0, excNum);
+          const totalNumExercises = await exercises.countDocuments(query);
+          return { exercisesList: selectedExercisesList, totalNumExercises };
+        } catch (e) {
+          console.error('3. Unable to issue find command, ${e}');
+          return { exercisesList: [], totalNumExercises: 0 };
         }
+      }
 
         static async getGroups(){
             let groups = []

@@ -12,8 +12,8 @@ import Card from 'react-bootstrap/Card';
 import { useRef } from 'react';//jumping to specific element
 import Collapse from 'react-bootstrap/Collapse'
 import { ThreeDots } from 'react-loader-spinner'
-import { Shuffle, Search } from 'lucide-react';
-
+import { Shuffle, Search, Settings } from 'lucide-react';
+import { shuffle, scrollToBottom } from "./features"
 
 const ExercisesList = props => {
     const [loading, setLoading] = useState(false)
@@ -23,41 +23,51 @@ const ExercisesList = props => {
     const [groups, setGroups] = useState(["All Groups"])
     const [equipments, setEquipments] = useState([])
 
-    const [open, setOpen] = useState({});
+    const [open, setOpen] = useState({});//collapse
+    const [selectedLevels, setSelectedLevels] = useState([2])
+    const levels = [1, 2, 3, 4]
+    const [count, setCount] = useState(5);
 
+    const [isCollapsed, setIsCollapsed] = useState(true);
 
+    const toggleCollapse = () => {
+        setIsCollapsed(!isCollapsed);
+    }
 
+    const handleLevelClick = (levelNumber) => {
+        if (!(selectedLevels.includes(levelNumber))) {
+            setSelectedLevels([...selectedLevels, levelNumber])
+            console.log("Länge: ", selectedLevels.length)
+        } else {
+            if (selectedLevels.length >= 2) {
+                console.log("Länge: ", selectedLevels.length)
+                setSelectedLevels(selectedLevels.filter(selectedLevel => selectedLevel !== levelNumber))
+            } else { console.log("Länge: ", selectedLevels.length) }
+        }
+    }
 
-
-
-
-
-    const bottomEl = useRef(null);//for Jumping to exercises bottomEl
-
-    useEffect(() => {
-        scrollToBottom();
-    }, [exercises]);
-
-    const scrollToBottom = () => {
-        if (bottomEl.current) {
-            bottomEl.current.scrollIntoView({ behavior: 'smooth' });
+    const handleIncrement = () => {
+        if (count < 30) {
+            setCount(count + 1);
         }
     };
-    //     bottomEl?.current?.scrollIntoView({ behavior: 'smooth' });
-    // };
+
+    const handleDecrement = () => {
+        if (count > 1) {
+            setCount(count - 1);
+        }
+    };
+
+    //for Jumping to exercises bottomEl
+    const bottomEl = useRef(null);
+    useEffect(() => {
+        scrollToBottom(bottomEl);
+    }, [exercises]);
+
+
 
     function handleCollapse(id) {
         setOpen(prevState => ({ ...prevState, [id]: !prevState[id] }))
-    }
-    function shuffle(a) {
-        var j, x, i;
-        for (i = a.length - 1; i > 0; i--) {
-            j = Math.floor(Math.random() * (i + 1));
-            x = a[i];
-            a[i] = a[j];
-            a[j] = x;
-        }
-        return a;
     }
 
     useEffect(() => {
@@ -65,10 +75,8 @@ const ExercisesList = props => {
         setTimeout(() => {
             setLoading(false)
         }, 5000)
-        //retrieveExercises()
         retrieveGroups()
         retrieveEquipments()
-        //scrollToBottom()
     }, [])
 
     const retrieveExercises = () => {//for findByGroup
@@ -119,8 +127,19 @@ const ExercisesList = props => {
             })
     }
 
-    const find2 = (query1, by1, query2, by2) => {
-        ExerciseDataService.find2(query1, by1, query2, by2)
+    // const find2 = (query1, by1, query2, by2) => {
+    //     ExerciseDataService.find2(query1, by1, query2, by2)
+    //         .then(res => {
+    //             const shuffled = shuffle([...res.data.exercises]); // Create a shuffled copy of the exercises
+    //             setExercises(shuffled); // Update the state with the shuffled exercises
+    //             //setExercises(res.data.exercises)
+    //         }).catch(e => {
+    //             console.log(e)
+    //         })
+    // }
+
+    const find3 = (query1, by1, query2, by2, query3, by3) => {
+        ExerciseDataService.find3(query1, by1, query2, by2, query3, by3, count)
             .then(res => {
                 const shuffled = shuffle([...res.data.exercises]); // Create a shuffled copy of the exercises
                 setExercises(shuffled); // Update the state with the shuffled exercises
@@ -139,7 +158,7 @@ const ExercisesList = props => {
             retrieveExercises()
         }
         else {
-            find2(selectedGroups, "groups", selectedEquipments, "equipments")
+            find3(selectedGroups, "groups", selectedEquipments, "equipments", selectedLevels, "levels")
         }
     }
 
@@ -155,7 +174,7 @@ const ExercisesList = props => {
     }
 
     //Choice Chip Equipment
-    const [selectedEquipments, setSelectedEquipments] = useState([]);
+    const [selectedEquipments, setSelectedEquipments] = useState(["none"]);
 
 
     const handleEquipmentToggle = (equipment) => {
@@ -166,97 +185,19 @@ const ExercisesList = props => {
         }
     };
 
-    const [activeTab, setActiveTab] = useState(1);
-
-    const handleTabClick = (tabNumber) => {
-        setActiveTab(tabNumber);
-    };
-
     return (
 
         <div>
-            {/* <div>
-      <div className="tab-buttons">
-        <button
-          onClick={() => handleTabClick(1)}
-          className={activeTab === 1 ? "active" : ""}
-        >
-          Tab 1
-        </button>
-        <button
-          onClick={() => handleTabClick(2)}
-          className={activeTab === 2 ? "active" : ""}
-        >
-          Tab 2
-        </button>
-        <button
-          onClick={() => handleTabClick(3)}
-          className={activeTab === 3 ? "active" : ""}
-        >
-          Tab 3
-        </button>
-      </div>
-
-      <div className="tab-content">
-        {activeTab === 1 && <div>Content for Tab 1</div>}
-        {activeTab === 2 && <div>Content for Tab 2</div>}
-        {activeTab === 3 && <div>Content for Tab 3</div>}
-      </div>
-    </div> */}
-
-
             {
                 loading ?
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
                         <ThreeDots color={'#1384db'} loading={loading} size={150} />
                     </div>
                     :
-
                     <Container>
-                        <Form>
-                            <Row>
-                                <div className="d-grid gap-2">
-                                    <Form.Group>
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Search by name"
-                                            value={searchName}
-                                            onChange={onChangeSearchName} />
-                                    </Form.Group>
-                                    <Button
-                                        className="my-button"
-                                        variant="primary"
-                                        type="button"
-                                        onClick={findByName}>
-                                        <Search />
-                                    </Button>
-                                </div>
-                                <Col>
-                                    {/* Dropdown Groups */}
-                                    {/* <Form.Group>
-                        <Form.Control
-                        as="select"
-                        onChange={onChangeSearchGroup}>
-                            {groups.map(group =>{
-                                return(
-                                    <option value={group}>{group}</option>
-                                )
-                            })}
-                                </Form.Control>
-                                </Form.Group> */}
-
-                                    {/* <Button
-                                    variant="primary"
-                                    type="button"
-                                    onClick={findByGroup}
-                                >
-                                Search
-                                </Button> */}
-                                </Col>
-                            </Row>
-                        </Form>
                         <p></p>
                         <p></p>
+                        <p style={{ textAlign: "center", fontWeight: "bold", fontSize: "20px" }}>Choose categories</p>
                         <Row>
                             <Col>
                                 {groups.map(group => (
@@ -264,7 +205,6 @@ const ExercisesList = props => {
                                         className="my-button"
                                         key={group}
                                         type="checkbox"
-                                        //variant={selectedGroups.includes(group) ? 'dark' : 'outline-dark'}
                                         variant={
                                             selectedGroups.length === 0
                                                 ? 'outline-dark'
@@ -297,30 +237,117 @@ const ExercisesList = props => {
 
                             </Col>
                         </Row>
-                        {/* Choice Chips Equipments */}
                         <p></p>
-                        <Row>
-                            <Col>
+<Row>
+                        <div className="d-grid gap-2">
 
-                                {equipments.map(equipment => (
-                                    <Button
-                                        className="my-button"
-                                        key={equipment}
-                                        type="checkbox"
-                                        variant={selectedEquipments.includes(equipment) ? 'dark' : 'outline-dark'}
-                                        value={equipment}
+                            <Button
+                                variant={isCollapsed ? "outline-primary" : "primary"}
+                                onClick={toggleCollapse}
+                            ><Settings /></Button>
 
-                                        onClick={() => {
-                                            handleEquipmentToggle(equipment);
+                            {!isCollapsed && (
+                                <div>
+                                    <p></p>
+                                    <p style={{ textAlign: "center", fontWeight: "bold", fontSize: "20px" }}>Choose level(s) and amount</p>
+                                    <Row>
+                                        <Col className="d-flex justify-content-center">
+                                            <div>
+                                                <div>
+                                                    {/* <button onClick={() => setSelectedLevels([2])}>Set only 2</button> */}
+                                                    {/* <button onClick={() => setSelectedButtons([1, 2, 3, 4])}>Select All</button> */}
+                                                </div>
+                                                <div className="button-group">
+                                                    <ButtonGroup>
+                                                        {levels.map((levelNumber) => (
+                                                            <Button
+                                                                key={levelNumber}
+                                                                onClick={() => handleLevelClick(levelNumber)}
+                                                                className={selectedLevels.includes(levelNumber) ? 'selected' : ''}
+                                                                variant={selectedLevels.includes(levelNumber) ? 'secondary' : 'outline-dark'}
+                                                            >
+                                                                {levelNumber}
+                                                            </Button>
+                                                        ))}
+                                                    </ButtonGroup>
+                                                </div>
+                                                {/* <div>Selected Buttons: {selectedLevels.join(', ')}</div> */}
+                                            </div>
+                                        </Col>
+                                        {/* </Row> */}
+                                        {/* Choice Chips Equipments */}
+                                        {/* <p></p> */}
+                                        {/* <Row> */}
+                                        <Col className="d-flex justify-content-center">
+                                            <div>
+                                                <ButtonGroup>
+                                                    <Button variant="secondary" size="md" onClick={handleDecrement}>-</Button>
+                                                    <Button variant="outline-dark" size="md"> {count} </Button>
+                                                    <Button variant="secondary" size="md" onClick={handleIncrement}>+</Button>
+                                                </ButtonGroup>
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                    <hr />
+                                    <p style={{ textAlign: "center", fontWeight: "bold", fontSize: "20px" }}>Choose your equipment</p>
+                                    <Row>
+                                        <Col>
 
-                                        }}>
-                                        {equipment}
-                                    </Button>
-                                ))}
-                                {/* </ButtonGroup> */}
-                            </Col>
+                                            {equipments.map(equipment => (
+                                                <Button
+                                                    className="my-button"
+                                                    key={equipment}
+                                                    type="checkbox"
+                                                    variant={selectedEquipments.includes(equipment) ? 'secondary' : 'outline-dark'}
+                                                    value={equipment}
+
+                                                    onClick={() => {
+                                                        handleEquipmentToggle(equipment);
+
+                                                    }}>
+                                                    {equipment}
+                                                </Button>
+                                            ))}
+                                            {/* </ButtonGroup> */}
+                                        </Col>
+                                    </Row>
+                                    <hr />
+                                    {/* <Row>
+                            <Form>
+                                <Row>
+                                    <div className="d-grid gap-2">
+                                        <Form.Group>
+                                            <Form.Control
+                                                type="text"
+                                                placeholder="Search by name"
+                                                value={searchName}
+                                                onChange={onChangeSearchName} />
+                                        </Form.Group>
+                                        <Button
+                                            className="my-button"
+                                            variant="primary"
+                                            type="button"
+                                            onClick={findByName}>
+                                            <Search />
+                                        </Button>
+                                    </div>
+                                    <Col>
+                                    </Col>
+                                </Row>
+                            </Form>
+                        </Row> */}
+
+
+
+
+
+                                </div>
+                            )}
+                        </div>
                         </Row>
-                        <p></p>
+
+
+                        {/* <p></p> */}
                         <Row>
                             <Col>
                                 <div className="d-grid gap-2">
@@ -337,7 +364,9 @@ const ExercisesList = props => {
                                     </Button>
                                 </div>
                             </Col>
-                            <p></p>
+                        </Row>
+                        <p></p>
+                        <Row>
                             <Col>
                                 <div className="d-grid gap-2"
                                     sticky="top">
@@ -357,7 +386,7 @@ const ExercisesList = props => {
                             </Col>
                         </Row>
                         <p></p>
-
+                        <hr />
 
                         <Row>
                             {exercises.map((exercise) => (
@@ -367,63 +396,62 @@ const ExercisesList = props => {
                                         className={"text-center mx-auto border-2"}
                                         border={
                                             exercise.group.includes('cardio')
-                                            ? 'primary'
-                                      : exercise.group.includes('leg')
-                                    ? 'secondary'
-                                    : exercise.group.includes('core')
-                                    ? 'success'
-                                    : exercise.group.includes('push')
-                                    ? 'warning'
-                                    : exercise.group.includes('pull')
-                                    ? 'danger'
-                                    : exercise.group.includes('mobility')
-                                    ? 'info'
-                                    : exercise.group.includes('walk')
-                                    ? 'dark'
-                                    : 'dark'
-                                     }
-                                    style={{ width: '20rem', margin: '5px' }}>
+                                                ? 'primary'
+                                                : exercise.group.includes('leg')
+                                                    ? 'secondary'
+                                                    : exercise.group.includes('core')
+                                                        ? 'success'
+                                                        : exercise.group.includes('push')
+                                                            ? 'warning'
+                                                            : exercise.group.includes('pull')
+                                                                ? 'danger'
+                                                                : exercise.group.includes('mobility')
+                                                                    ? 'info'
+                                                                    : exercise.group.includes('walk')
+                                                                        ? 'dark'
+                                                                        : 'dark'
+                                        }
+                                        style={{ width: '20rem', margin: '5px' }}>
 
-                                    {/* <Card.Img src={exercise.poster+"/100px180"} /> */}
-                                    <Card.Body>
-                                        <Card.Title
-                                            style={{
+                                        {/* <Card.Img src={exercise.poster+"/100px180"} /> */}
+                                        <Card.Body>
+                                            <Card.Title
+                                                style={{
 
-                                            }}
-                                        >{exercise.name}</Card.Title>
-                                        <Card.Text>
-                                            <Row>
-                                                <Card.Text className="text-center">{exercise.equipment.join(' or ')}</Card.Text>
+                                                }}
+                                            >{exercise.name}</Card.Title>
+                                            <Card.Text>
+                                                <Row>
+                                                    <Card.Text className="text-center">{exercise.equipment.join(' or ')}</Card.Text>
 
-                                                <div className="border border-dark rounded-2"
-                                                    onClick={() => handleCollapse(exercise._id)}>how to
-                                                    <Collapse in={open[exercise._id]}>
-                                                        <div key={exercise._id} id="example-collapse-text" className="collapsedText">
-                                                            {exercise.howto ? (
-                                                                <ul style={{ textAlign: 'left', listStyleType: 'disc', paddingLeft: '20px' }}>
-                                                                    {exercise.howto.map((step, index) => (
-                                                                        <li key={index}>{step}</li>
-                                                                    ))}
-                                                                </ul>
-                                                            ) : (
-                                                                <p>explanation coming soon.</p>
-                                                            )}
-                                                        </div>
-                                                    </Collapse></div>
-                                            </Row>
+                                                    <div className="border border-dark rounded-2"
+                                                        onClick={() => handleCollapse(exercise._id)}>how to
+                                                        <Collapse in={open[exercise._id]}>
+                                                            <div key={exercise._id} id="example-collapse-text" className="collapsedText">
+                                                                {exercise.howto ? (
+                                                                    <ul style={{ textAlign: 'left', listStyleType: 'disc', paddingLeft: '20px' }}>
+                                                                        {exercise.howto.map((step, index) => (
+                                                                            <li key={index}>{step}</li>
+                                                                        ))}
+                                                                    </ul>
+                                                                ) : (
+                                                                    <p>explanation coming soon.</p>
+                                                                )}
+                                                            </div>
+                                                        </Collapse></div>
+                                                </Row>
 
 
-                                        </Card.Text>
+                                            </Card.Text>
 
-                                        {/* <Card.Text>{exercise.plot}</Card.Text> */}
-                                        {/* <Link to ={"/exercises/"+exercise._id}>View Reviews</Link> */}
-                                    </Card.Body>
-                                </Card>
+                                            {/* <Card.Text>{exercise.plot}</Card.Text> */}
+                                            {/* <Link to ={"/exercises/"+exercise._id}>View Reviews</Link> */}
+                                        </Card.Body>
+                                    </Card>
                                 </Col>
-                        ))
+                            ))
                             }
-                    </Row>
-
+                        </Row>
                     </Container>
 
             }

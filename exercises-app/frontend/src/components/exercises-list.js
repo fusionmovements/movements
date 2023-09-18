@@ -208,6 +208,7 @@ const ExercisesList = props => {
                                     <Button
                                         className="btn"
                                         key={group}
+                                        style={{ margin: "3px" }}
                                         type="checkbox"
                                         variant={
                                             selectedGroups.length === 0

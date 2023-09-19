@@ -28,7 +28,7 @@ const ExercisesList = props => {
     const [equipments, setEquipments] = useState([])
 
     const [open, setOpen] = useState({});//collapse
-    const [selectedLevels, setSelectedLevels] = useState([2])
+    const [selectedLevels, setSelectedLevels] = useState([1,2])
     const levels = [1, 2, 3, 4]
     const [count, setCount] = useState(5);
 

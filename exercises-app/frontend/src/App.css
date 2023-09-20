@@ -85,6 +85,10 @@
   white-space: nowrap; /* Prevent button content from wrapping */
   overflow: hidden; /* Hide content that overflows */
   text-overflow: ellipsis; /* Show ellipsis for truncated content */
+  border-radius: 5px;
+  text-align: center;
+  font-weight: bold; /* Makes the text bold */
+  font-size: 20em;
 }
 
 /* CSS for normal-sized buttons */
@@ -103,5 +107,21 @@
   display: flex; /* Use flexbox to create a row layout */
   justify-content: space-between; /* Distribute space between buttons */
   margin: 0 -3px; /* Negative margin to offset the margin between buttons */
+  align-items: center;
+}
+
+.fixed-buttons2 {
+  position: fixed;
+  bottom: 60px; /* Adjust the distance from the bottom as needed */
+  left: 10px;
+  height: 30px;
+  right: 10px; /* Adjust the distance from the right as needed */
+  z-index: 1000; /* Adjust the z-index as needed */
+  display: flex; /* Use flexbox to create a row layout */
+  align-items: center;
+  justify-content: space-between; /* Distribute space between buttons */
+  margin: 0 -3px; /* Negative margin to offset the margin between buttons */
+  border: 1px;
+  border-radius: 3%;
 }
 

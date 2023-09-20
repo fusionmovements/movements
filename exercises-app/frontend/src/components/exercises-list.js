@@ -30,8 +30,8 @@ const ExercisesList = props => {
 
     //Intervall settings
     const [count, setCount] = useState(5);
-    const [countTimer, setCountTimer] = useState(6);//Time per Exc.
-    const [countPause, setCountPause] = useState(4);//Pause Time
+    const [countTimer, setCountTimer] = useState(30);//Time per Exc.
+    const [countPause, setCountPause] = useState(15);//Pause Time
     const [countReps, setCountReps] = useState(3);//Number of Reps
     const [countSets, setCountSets] = useState(4);//Number of Sets
     const [countPausebSets, setCountPausebSets] = useState(45);//Pause Time betw. Sets
@@ -307,6 +307,7 @@ const ExercisesList = props => {
                                                     <Button
                                                         className="my-button"
                                                         key={equipment}
+                                                        style={{ margin: "3px" }}
                                                         type="checkbox"
                                                         variant={selectedEquipments.includes(equipment) ? 'secondary' : 'outline-dark'}
                                                         value={equipment}
@@ -369,9 +370,9 @@ const ExercisesList = props => {
 
                                                     <div>
                                                         <ButtonGroup>
-                                                            <Button variant="secondary" size="md" onClick={() => handleIncrement(countPause, 10, 30, -2, setCountPause)}>-</Button>
+                                                            <Button variant="secondary" size="md" onClick={() => handleIncrement(countPause, 0, 30, -2, setCountPause)}>-</Button>
                                                             <Button variant="outline-dark" size="md"> {countPause} sec</Button>
-                                                            <Button variant="secondary" size="md" onClick={() => handleIncrement(countPause, 10, 30, 2, setCountPause)}>+</Button>
+                                                            <Button variant="secondary" size="md" onClick={() => handleIncrement(countPause, 0, 30, 2, setCountPause)}>+</Button>
                                                         </ButtonGroup>
                                                     </div>
                                                 </Col>
@@ -456,26 +457,14 @@ const ExercisesList = props => {
                                 <div className="d-grid gap-2"
                                     sticky="top">
 
-                                    {(exercises.length > 0 || trainStatus === "Stopped" || trainStatus === "Paused") && !(trainStatus === "Started") ? (
-                                        <Button
-                                            variant="outline-primary"
-                                            type="button"
-                                            onClick={() => {
-                                                //scrollToBottom();
-                                                const shuffled = shuffle([...exercises]); // Create a shuffled copy of the exercises
-                                                setExercises(shuffled); // Update the state with the shuffled exercises
-                                            }}
-                                        >
-                                            <Shuffle />
-                                        </Button>) : null
-                                    }
+
                                 </div>
                             </Col>
                         </Row>
                         <p></p>
 
-                        
-                            {/* <Col>
+
+                        {/* <Col>
                                 <div className="d-grid gap-2"
                                     sticky="top">
                                     {trainStatus === "Prep" || trainStatus === "Stopped" || trainStatus === "Paused" ?
@@ -508,67 +497,96 @@ const ExercisesList = props => {
                                 </div>
                             </Col> */}
 
-                            {/* <Col> */}
-                            <div
+                        {/* <Col> */}
+                        <div
+                            className={"fixed-buttons2"}>
+
+                            {trainStatus === "Started" || trainStatus === "Paused" ? (
+                                <Button
+                                    type="button"
+                                    className={"btn-wide bg-warning"}
+                                    variant={"outline-dark"}>
+                                    <Timer excItemNum={excItemNum} setExcItemNum={setExcItemNum} TimerVar={countTimer} StatusUser={trainStatus} PauseVar={countPause} MaxExcItem={count} />
+                                </Button>) : null}
+                            {/* // Active excItemNum = {excItemNum}
+//                         <p>{trainStatus}</p> */}
+
+                        </div>
+                        <div
                             className={"fixed-buttons"}>
-                                
-                                {trainStatus === "Started" || trainStatus === "Paused" ? (
-                                    <Button
-                                        type="button"
-                                        onClick={() => {
-                                            setTrainStatus("Stopped")
-                                            scrollToBottom(bottomEl)
-                                        }}
-                                        className={"btn-wide bg-danger"}
-                                        variant={"outline-dark"}>
-                                        <Square />
-                                    </Button>
-                                ) : null}
-
-                                {(exercises.length > 0 || trainStatus === "Stopped" || trainStatus === "Paused") && !(trainStatus ==="Started") ? (
-                                     <Button
-                                     type="button"
-                                     className={"btn-wide bg-success"}
-                                     onClick={() => {
-                                       setTrainStatus("Started");
-                                       scrollToBottom(bottomEl);
-
-                                     }}
-                                     variant={"outline-dark"}
-                                   >
-                                     {<Play />}
-                                   </Button>
-                                ) : null}
-
-                                {trainStatus === "Started" ? (
-                                    <Button
-                                        type="button"
-                                        onClick={() => {
-                                            setTrainStatus("Paused")
-                                            scrollToBottom(bottomEl)
-                                        }}
-                                        className={"btn-wide bg-secondary"}
-                                        variant={"outline-dark"}>
-                                        <Pause />
-                                    </Button>
-                                ) : null}
 
 
-                            </div>
-                            {/* </Col> */}
-                       
-                        <p></p>
+                            {trainStatus === "Started" || trainStatus === "Paused" ? (
+                                <Button
+                                    type="button"
+                                    onClick={() => {
+                                        setTrainStatus("Stopped")
+                                        setExcItemNum(0)
+                                        scrollToBottom(bottomEl)
+                                    }}
+                                    className={"btn-wide bg-danger"}
+                                    variant={"outline-dark"}>
+                                    <Square />
+                                </Button>
+                            ) : null}
 
-                        <div><Timer excItemNum={excItemNum} setExcItemNum={setExcItemNum} TimerVar={countTimer} StatusUser={trainStatus} PauseVar={countPause} MaxExcItem={count} /></div>
-                        <br></br>
-                        Active excItemNum = {excItemNum}
-                        <p>{trainStatus}</p>
-                        <hr />
+                            {(exercises.length > 0 || trainStatus === "Stopped" || trainStatus === "Paused") && !(trainStatus === "Started") ? (
+                                <Button
+                                    type="button"
+                                    className={"btn-wide bg-primary"}
+                                    onClick={() => {
+                                        //scrollToBottom();
+                                        const shuffled = shuffle([...exercises]); // Create a shuffled copy of the exercises
+                                        setExercises(shuffled); // Update the state with the shuffled exercises
+                                    }}
+                                    variant={"outline-dark"}
+                                >
+                                    <Shuffle />
+                                </Button>) : null
+                            }
+
+                            {(exercises.length > 0 || trainStatus === "Stopped" || trainStatus === "Paused") && !(trainStatus === "Started") ? (
+                                <Button
+                                    type="button"
+                                    className={"btn-wide bg-success"}
+                                    onClick={() => {
+                                        setTrainStatus("Started");
+                                        scrollToBottom(bottomEl);
+
+                                    }}
+                                    variant={"outline-dark"}
+                                >
+                                    {<Play />}
+                                </Button>
+                            ) : null}
+
+                            {trainStatus === "Started" ? (
+                                <Button
+                                    type="button"
+                                    onClick={() => {
+                                        setTrainStatus("Paused")
+                                        scrollToBottom(bottomEl)
+                                    }}
+                                    className={"btn-wide bg-secondary"}
+                                    variant={"outline-dark"}>
+                                    <Pause />
+                                </Button>
+                            ) : null}
+
+
+                        </div>
+                        {/* </Col> */}
+
+                        {/* <p></p> */}
+
+                        {/* <br></br> */}
+
+                        {/* <hr /> */}
                         <Row>
                             {exercises.map((exercise) => (
                                 <Col key={exercise._id}>
+                                    <div ref={excItemNum === exercises.findIndex(item => item._id === exercise._id) ? bottomEl : null}></div>
 
-                                    {/* <div ref={excItemNum === exercises.findIndex(item => item._id === exercise._id) ? bottomEl : null}></div> */}
                                     <Card
                                         className={"text-center mx-auto border-2"}
                                         border={

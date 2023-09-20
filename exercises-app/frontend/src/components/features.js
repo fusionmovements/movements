@@ -78,14 +78,14 @@ export function Timer({ TimerVar, StatusUser, PauseVar, MaxExcItem, excItemNum, 
   }, [remainingTime, StatusUser, TimerVar, PauseVar]);
 
   return (
-    <div className="countdown-card">
+    <div>
       {statusProgress === "work" && !(StatusUser === "Stopped" || StatusUser === "Prep") ? (
-        <div className="countdown-text">
-          Excercising left: {Math.floor(remainingTime / 1000)}.{Math.floor((remainingTime % 1000) / 100)} second
+        <div>
+          Excercising left: {Math.floor(remainingTime / 1000)}.{Math.floor((remainingTime % 1000) / 100)} s
         </div>
       ) : (statusProgress === "pause" || statusProgress === "countdown") && !(StatusUser === "Stopped" || StatusUser === "Prep") ? (
-        <div className="countdown-text">
-          Start in: {Math.floor(remainingTime / 1000)}.{Math.floor((remainingTime % 1000) / 100)} second
+        <div>
+          Start in: {Math.floor(remainingTime / 1000)}.{Math.floor((remainingTime % 1000) / 100)} s
 
         </div>
       ) : null}

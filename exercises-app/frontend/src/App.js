@@ -30,25 +30,17 @@ function App() {
     <div>
       
 
-<Navbar sticky="top" className="m-auto" bg="light" expand="lg">
+{/* <Navbar sticky="top" className="m-auto" bg="light" expand="lg">
         <Navbar.Brand href="#home" >   Fusionmovements</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link>
-              {/* <Link to={"/exercises"}> Exercises </Link> */}
               </Nav.Link>
-
-            {/* <Nav.Link>
-              {user?(
-                <a onClick={logout}>Logout User</a>
-              ):(
-                // <Link to={"/login"}>Login</Link>
-              )}
-            </Nav.Link> */}
             </Nav>
         </Navbar.Collapse>
-    </Navbar>
+    </Navbar> */}
+
 {/* <a>user is {console.log(setUser)}</a> */}
 <Switch>
     <Route exact path={["/", "/exercises"]} component = {ExercisesList} />

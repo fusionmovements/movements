@@ -12,15 +12,12 @@ import Card from 'react-bootstrap/Card';
 import { useRef } from 'react';//jumping to specific element
 import Collapse from 'react-bootstrap/Collapse'
 import { ThreeDots } from 'react-loader-spinner'
-import { Shuffle, Search, Settings } from 'lucide-react';
-import { shuffle, scrollToBottom } from "./features"
+import { Shuffle, Search, Settings, Play, Pause, Square } from 'lucide-react';
+import { shuffle, scrollToBottom, handleIncrement, Timer } from "./features"
 
 const ExercisesList = props => {
     const [loading, setLoading] = useState(false)
-    const buttonRef = useRef(null)
-    function handleClickBlur(){
-        buttonRef.current.blur()
-    }
+
 
     const [exercises, setExercises] = useState([])
     const [searchName, setSearchName] = useState("")
@@ -30,7 +27,19 @@ const ExercisesList = props => {
     const [open, setOpen] = useState({});//collapse
     const [selectedLevels, setSelectedLevels] = useState([2])
     const levels = [1, 2, 3, 4]
+
+    //Intervall settings
     const [count, setCount] = useState(5);
+    const [countTimer, setCountTimer] = useState(6);//Time per Exc.
+    const [countPause, setCountPause] = useState(4);//Pause Time
+    const [countReps, setCountReps] = useState(3);//Number of Reps
+    const [countSets, setCountSets] = useState(4);//Number of Sets
+    const [countPausebSets, setCountPausebSets] = useState(45);//Pause Time betw. Sets
+
+    const [excItemNum, setExcItemNum] = useState(0);
+
+    //Training View
+    const [trainStatus, setTrainStatus] = useState("Prep");
 
     const [isCollapsed, setIsCollapsed] = useState(true);
 
@@ -50,23 +59,13 @@ const ExercisesList = props => {
         }
     }
 
-    const handleIncrement = () => {
-        if (count < 30) {
-            setCount(count + 1);
-        }
-    };
 
-    const handleDecrement = () => {
-        if (count > 1) {
-            setCount(count - 1);
-        }
-    };
 
     //for Jumping to exercises bottomEl
     const bottomEl = useRef(null);
     useEffect(() => {
         scrollToBottom(bottomEl);
-    }, [exercises]);
+    }, [exercises, excItemNum]);
 
 
 
@@ -208,6 +207,7 @@ const ExercisesList = props => {
                                     <Button
                                         className="btn"
                                         key={group}
+                                        style={{ margin: "3px" }}
                                         type="checkbox"
                                         variant={
                                             selectedGroups.length === 0
@@ -242,81 +242,87 @@ const ExercisesList = props => {
                             </Col>
                         </Row>
                         <p></p>
-<Row>
-                        <div className="d-grid gap-2">
 
-                            <Button
-                                variant={isCollapsed ? "outline-primary" : "primary"}
-                                onClick={toggleCollapse}
-                            ><Settings /></Button>
 
-                            {!isCollapsed && (
-                                <div>
-                                    <p></p>
-                                    <p style={{ textAlign: "center", fontWeight: "bold", fontSize: "20px" }}>Choose level(s) and amount</p>
-                                    <Row>
-                                        <Col className="d-flex justify-content-center">
-                                            <div>
+
+
+
+                        <p></p>
+                        <Row>
+                            <div className="d-grid gap-2">
+
+                                <Button
+                                    variant={isCollapsed ? "outline-primary" : "primary"}
+                                    onClick={toggleCollapse}
+                                ><Settings /></Button>
+
+                                {!isCollapsed && (
+                                    <div>
+                                        <p></p>
+                                        <p style={{ textAlign: "center", fontWeight: "bold", fontSize: "20px" }}>Choose level(s) and amount</p>
+                                        <Row>
+                                            <Col className="d-flex justify-content-center">
                                                 <div>
-                                                    {/* <button onClick={() => setSelectedLevels([2])}>Set only 2</button> */}
-                                                    {/* <button onClick={() => setSelectedButtons([1, 2, 3, 4])}>Select All</button> */}
+                                                    <div>
+                                                        {/* <button onClick={() => setSelectedLevels([2])}>Set only 2</button> */}
+                                                        {/* <button onClick={() => setSelectedButtons([1, 2, 3, 4])}>Select All</button> */}
+                                                    </div>
+                                                    <div className="button-group">
+                                                        <ButtonGroup>
+                                                            {levels.map((levelNumber) => (
+                                                                <Button
+                                                                    key={levelNumber}
+                                                                    onClick={() => handleLevelClick(levelNumber)}
+                                                                    className={selectedLevels.includes(levelNumber) ? 'selected' : ''}
+                                                                    variant={selectedLevels.includes(levelNumber) ? 'secondary' : 'outline-dark'}
+                                                                >
+                                                                    {levelNumber}
+                                                                </Button>
+                                                            ))}
+                                                        </ButtonGroup>
+                                                    </div>
+                                                    {/* <div>Selected Buttons: {selectedLevels.join(', ')}</div> */}
                                                 </div>
-                                                <div className="button-group">
+                                            </Col>
+                                            {/* </Row> */}
+                                            {/* Choice Chips Equipments */}
+                                            {/* <p></p> */}
+                                            {/* <Row> */}
+                                            <Col className="d-flex justify-content-center">
+                                                <div>
                                                     <ButtonGroup>
-                                                        {levels.map((levelNumber) => (
-                                                            <Button
-                                                                key={levelNumber}
-                                                                onClick={() => handleLevelClick(levelNumber)}
-                                                                className={selectedLevels.includes(levelNumber) ? 'selected' : ''}
-                                                                variant={selectedLevels.includes(levelNumber) ? 'secondary' : 'outline-dark'}
-                                                            >
-                                                                {levelNumber}
-                                                            </Button>
-                                                        ))}
+                                                        <Button variant="secondary" size="md" onClick={() => handleIncrement(count, 1, 12, -1, setCount)}>-</Button>
+                                                        <Button variant="outline-dark" size="md"> {count} </Button>
+                                                        <Button variant="secondary" size="md" onClick={() => handleIncrement(count, 1, 12, 1, setCount)}>+</Button>
                                                     </ButtonGroup>
                                                 </div>
-                                                {/* <div>Selected Buttons: {selectedLevels.join(', ')}</div> */}
-                                            </div>
-                                        </Col>
-                                        {/* </Row> */}
-                                        {/* Choice Chips Equipments */}
-                                        {/* <p></p> */}
-                                        {/* <Row> */}
-                                        <Col className="d-flex justify-content-center">
-                                            <div>
-                                                <ButtonGroup>
-                                                    <Button variant="secondary" size="md" onClick={handleDecrement}>-</Button>
-                                                    <Button variant="outline-dark" size="md"> {count} </Button>
-                                                    <Button variant="secondary" size="md" onClick={handleIncrement}>+</Button>
-                                                </ButtonGroup>
-                                            </div>
-                                        </Col>
-                                    </Row>
-                                    <hr />
-                                    <p style={{ textAlign: "center", fontWeight: "bold", fontSize: "20px" }}>Choose your equipment</p>
-                                    <Row>
-                                        <Col>
+                                            </Col>
+                                        </Row>
+                                        <hr />
+                                        <p style={{ textAlign: "center", fontWeight: "bold", fontSize: "20px" }}>Choose your equipment</p>
+                                        <Row>
+                                            <Col>
 
-                                            {equipments.map(equipment => (
-                                                <Button
-                                                    className="my-button"
-                                                    key={equipment}
-                                                    type="checkbox"
-                                                    variant={selectedEquipments.includes(equipment) ? 'secondary' : 'outline-dark'}
-                                                    value={equipment}
+                                                {equipments.map(equipment => (
+                                                    <Button
+                                                        className="my-button"
+                                                        key={equipment}
+                                                        type="checkbox"
+                                                        variant={selectedEquipments.includes(equipment) ? 'secondary' : 'outline-dark'}
+                                                        value={equipment}
 
-                                                    onClick={() => {
-                                                        handleEquipmentToggle(equipment);
+                                                        onClick={() => {
+                                                            handleEquipmentToggle(equipment);
 
-                                                    }}>
-                                                    {equipment}
-                                                </Button>
-                                            ))}
-                                            {/* </ButtonGroup> */}
-                                        </Col>
-                                    </Row>
-                                    <hr />
-                                    {/* <Row>
+                                                        }}>
+                                                        {equipment}
+                                                    </Button>
+                                                ))}
+                                                {/* </ButtonGroup> */}
+                                            </Col>
+                                        </Row>
+                                        <hr />
+                                        {/* <Row>
                             <Form>
                                 <Row>
                                     <div className="d-grid gap-2">
@@ -342,12 +348,87 @@ const ExercisesList = props => {
                         </Row> */}
 
 
+                                        <Row>
+
+                                            <Row className="align-items-center">
+                                                <Col><p style={{ textAlign: "center", fontWeight: "bold", fontSize: "20px" }}>Time per exercise</p></Col>
+                                                <Col className="d-flex justify-content-center">
+                                                    <div>
+                                                        <ButtonGroup>
+                                                            <Button variant="secondary" size="md" onClick={() => handleIncrement(countTimer, 5, 300, -5, setCountTimer)}>-</Button>
+                                                            <Button variant="outline-dark" size="md"> {countTimer} sec</Button>
+                                                            <Button variant="secondary" size="md" onClick={() => handleIncrement(countTimer, 5, 300, 5, setCountTimer)}>+</Button>
+                                                        </ButtonGroup>
+                                                    </div>
+                                                </Col>
+                                            </Row>
+
+                                            <Row className="align-items-center">
+                                                <Col><p style={{ textAlign: "center", fontWeight: "bold", fontSize: "20px" }}>Pause betw. exercises</p></Col>
+                                                <Col className="d-flex justify-content-center">
+
+                                                    <div>
+                                                        <ButtonGroup>
+                                                            <Button variant="secondary" size="md" onClick={() => handleIncrement(countPause, 10, 30, -2, setCountPause)}>-</Button>
+                                                            <Button variant="outline-dark" size="md"> {countPause} sec</Button>
+                                                            <Button variant="secondary" size="md" onClick={() => handleIncrement(countPause, 10, 30, 2, setCountPause)}>+</Button>
+                                                        </ButtonGroup>
+                                                    </div>
+                                                </Col>
+                                            </Row>
+
+                                            <Row className="align-items-center">
+                                                <Col><p style={{ textAlign: "center", fontWeight: "bold", fontSize: "20px" }}>Reps of each exercise</p></Col>
+                                                <Col className="d-flex justify-content-center">
+
+                                                    <div>
+                                                        <ButtonGroup>
+                                                            <Button variant="secondary" size="md" onClick={() => handleIncrement(countReps, 1, 30, -1, setCountReps)}>-</Button>
+                                                            <Button variant="outline-dark" size="md"> {countReps}</Button>
+                                                            <Button variant="secondary" size="md" onClick={() => handleIncrement(countReps, 1, 30, 1, setCountReps)}>+</Button>
+                                                        </ButtonGroup>
+                                                    </div>
+                                                </Col>
+
+                                            </Row>
+
+                                            <Row className="align-items-center">
+                                                <Col><p style={{ textAlign: "center", fontWeight: "bold", fontSize: "20px" }}>Sets</p></Col>
+                                                <Col className="d-flex justify-content-center">
+
+                                                    <div>
+                                                        <ButtonGroup>
+                                                            <Button variant="secondary" size="md" onClick={() => handleIncrement(countSets, 1, 30, -1, setCountSets)}>-</Button>
+                                                            <Button variant="outline-dark" size="md"> {countSets}</Button>
+                                                            <Button variant="secondary" size="md" onClick={() => handleIncrement(countSets, 1, 30, 1, setCountSets)}>+</Button>
+                                                        </ButtonGroup>
+                                                    </div>
+                                                </Col>
+                                            </Row>
+
+                                            <Row className="align-items-center">
+                                                <Col><p style={{ textAlign: "center", fontWeight: "bold", fontSize: "20px" }}>Pause between sets</p></Col>
+                                                <Col className="d-flex justify-content-center">
+
+                                                    <div>
+                                                        <ButtonGroup>
+                                                            <Button variant="secondary" size="md" onClick={() => handleIncrement(countPausebSets, 20, 300, -5, setCountPausebSets)}>-</Button>
+                                                            <Button variant="outline-dark" size="md"> {countPausebSets}</Button>
+                                                            <Button variant="secondary" size="md" onClick={() => handleIncrement(countPausebSets, 20, 300, 5, setCountPausebSets)}>+</Button>
+                                                        </ButtonGroup>
+                                                    </div>
+                                                </Col>
+                                            </Row>
+
+                                        </Row>
+
+                                        <hr />
 
 
 
-                                </div>
-                            )}
-                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </Row>
 
 
@@ -355,7 +436,7 @@ const ExercisesList = props => {
                         <Row>
                             <Col>
                                 <div className="d-grid gap-2">
-                                    <div ref={bottomEl}></div>
+                                    <div ref={trainStatus === "Prep" ? bottomEl : null}></div>
                                     <Button
                                         //class = "btn btn-default btn-block"
                                         variant="primary"
@@ -375,27 +456,119 @@ const ExercisesList = props => {
                                 <div className="d-grid gap-2"
                                     sticky="top">
 
-                                    <Button
-                                        variant="outline-primary"
-                                        type="button"
-                                        onClick={() => {
-                                            //scrollToBottom();
-                                            const shuffled = shuffle([...exercises]); // Create a shuffled copy of the exercises
-                                            setExercises(shuffled); // Update the state with the shuffled exercises
-                                        }}
-                                    >
-                                        <Shuffle />
-                                    </Button>
+                                    {(exercises.length > 0 || trainStatus === "Stopped" || trainStatus === "Paused") && !(trainStatus === "Started") ? (
+                                        <Button
+                                            variant="outline-primary"
+                                            type="button"
+                                            onClick={() => {
+                                                //scrollToBottom();
+                                                const shuffled = shuffle([...exercises]); // Create a shuffled copy of the exercises
+                                                setExercises(shuffled); // Update the state with the shuffled exercises
+                                            }}
+                                        >
+                                            <Shuffle />
+                                        </Button>) : null
+                                    }
                                 </div>
                             </Col>
                         </Row>
                         <p></p>
-                        <hr />
 
+                        
+                            {/* <Col>
+                                <div className="d-grid gap-2"
+                                    sticky="top">
+                                    {trainStatus === "Prep" || trainStatus === "Stopped" || trainStatus === "Paused" ?
+                                        <Button
+                                            // variant={trainStarted ? "primary" : "outline-primary"}
+                                            type="button"
+                                            onClick={() => setTrainStatus("Started")}
+                                        >
+                                            {<Play />}
+                                        </Button>
+                                        : null}
+                                    {trainStatus === "Started" ?
+                                        <Button
+                                            // variant={trainStarted ? "primary" : "outline-primary"}
+                                            type="button"
+                                            onClick={() => setTrainStatus("Paused")}
+                                        >
+                                            <Pause />
+                                        </Button>
+                                        : null}
+                                    {trainStatus === "Started" || trainStatus === "Paused" ?
+                                        <Button
+                                            // variant={trainStarted ? "primary" : "outline-primary"}
+                                            type="button"
+                                            onClick={() => setTrainStatus("Stopped")}
+                                        >
+                                            <Square />
+                                        </Button>
+                                        : null}
+                                </div>
+                            </Col> */}
+
+                            {/* <Col> */}
+                            <div
+                            className={"fixed-buttons"}>
+                                
+                                {trainStatus === "Started" || trainStatus === "Paused" ? (
+                                    <Button
+                                        type="button"
+                                        onClick={() => {
+                                            setTrainStatus("Stopped")
+                                            scrollToBottom(bottomEl)
+                                        }}
+                                        className={"btn-wide bg-danger"}
+                                        variant={"outline-dark"}>
+                                        <Square />
+                                    </Button>
+                                ) : null}
+
+                                {(exercises.length > 0 || trainStatus === "Stopped" || trainStatus === "Paused") && !(trainStatus ==="Started") ? (
+                                     <Button
+                                     type="button"
+                                     className={"btn-wide bg-success"}
+                                     onClick={() => {
+                                       setTrainStatus("Started");
+                                       scrollToBottom(bottomEl);
+
+                                     }}
+                                     variant={"outline-dark"}
+                                   >
+                                     {<Play />}
+                                   </Button>
+                                ) : null}
+
+                                {trainStatus === "Started" ? (
+                                    <Button
+                                        type="button"
+                                        onClick={() => {
+                                            setTrainStatus("Paused")
+                                            scrollToBottom(bottomEl)
+                                        }}
+                                        className={"btn-wide bg-secondary"}
+                                        variant={"outline-dark"}>
+                                        <Pause />
+                                    </Button>
+                                ) : null}
+
+
+                            </div>
+                            {/* </Col> */}
+                       
+                        <p></p>
+
+                        <div><Timer excItemNum={excItemNum} setExcItemNum={setExcItemNum} TimerVar={countTimer} StatusUser={trainStatus} PauseVar={countPause} MaxExcItem={count} /></div>
+                        <br></br>
+                        Active excItemNum = {excItemNum}
+                        <p>{trainStatus}</p>
+                        <hr />
                         <Row>
                             {exercises.map((exercise) => (
                                 <Col key={exercise._id}>
 
+                                    {/* <div ref={excItemNum === exercises.findIndex(item => item._id === exercise._id) ? bottomEl : null}></div> */}
                                     <Card
                                         className={"text-center mx-auto border-2"}
                                         border={
@@ -415,7 +588,30 @@ const ExercisesList = props => {
                                                                         ? 'dark'
                                                                         : 'dark'
                                         }
-                                        style={{ width: '20rem', margin: '5px' }}>
+                                        style={{
+                                            width: '20rem',
+                                            margin: '5px',
+
+                                            backgroundColor: excItemNum === exercises.findIndex(item => item._id === exercise._id)
+                                                ? (exercise.group.includes('cardio')
+                                                    ? '#0275d8' // Hex color code for 'cardio'
+                                                    : exercise.group.includes('leg')
+                                                        ? '#808080' // Hex color code for 'leg'
+                                                        : exercise.group.includes('core')
+                                                            ? '#5cb85c' // Hex color code for 'core'
+                                                            : exercise.group.includes('push')
+                                                                ? '#f0ad4e' // Hex color code for 'push'
+                                                                : exercise.group.includes('pull')
+                                                                    ? '#d9534f' // Hex color code for 'pull'
+                                                                    : exercise.group.includes('mobility')
+                                                                        ? '#5bc0de' // Hex color code for 'mobility'
+                                                                        : exercise.group.includes('walk')
+                                                                            ? 'black' // Hex color code for 'walk'
+                                                                            : 'black' // Default color
+                                                )
+                                                : null,
+                                            color: excItemNum === exercises.findIndex(item => item._id === exercise._id) ? 'white' : 'black'// Text color
+                                        }}>
 
                                         {/* <Card.Img src={exercise.poster+"/100px180"} /> */}
                                         <Card.Body>
@@ -426,8 +622,10 @@ const ExercisesList = props => {
                                             >{exercise.name}</Card.Title>
                                             <Card.Text>
                                                 <Row>
-                                                    <Card.Text className="text-center">{exercise.equipment.join(' or ')}</Card.Text>
+                                                    <Card.Text className="text-center">{exercise.equipment.join(' or ')}
+                                                        <br></br>Number: {exercises.findIndex(item => item._id === exercise._id)}</Card.Text>
 
+                                                    {/* How to perform the exercise */}
                                                     <div className="border border-dark rounded-2"
                                                         onClick={() => handleCollapse(exercise._id)}>how to
                                                         <Collapse in={open[exercise._id]}>

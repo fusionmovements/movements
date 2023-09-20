@@ -37,30 +37,71 @@
   }
 }
 
-.my-button {
-  margin: 3px 3px 3px 3px;
-}
 
-.card-primary {
-  background-color: #007bff; /* Primary color */
-  color: #fff; /* Text color */
-}
-
-.card-secondary {
-  background-color: #6c757d; /* Secondary color */
-  color: #fff; /* Text color */
-}
-
-.card-success {
-  background-color: #28a745; /* Success color */
-  color: #fff; /* Text color */
-}
 
 .settingsDiv {
   min-height: 50 px;
 }
 
-.btn:hover { 
+/* stop hover */
+.btn:hover {
   --bs-btn-hover-color: var(--bs-btn-color);
   --bs-btn-hover-bg: var(--bs-btn-bg);
 }
+
+
+/* .countdown-card {
+  border: 2rem solid red;
+  position: relative;
+  width: 200px; /* Adjust the width as needed */
+  /* height: 200px;  */
+  /* border-radius: 50%;  */
+
+
+/* .countdown-mask {
+  border: 2rem solid green;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  transform-origin: center center;
+  transform: rotate(0deg);} */
+
+/* .countdown-text {
+  color: blue;
+  text-align: center;
+  line-height: 200px; */
+
+/* CSS for wide buttons */
+.btn-wide {
+  flex-grow: 1; /* Makes the button as wide as the available space */
+  margin: 0 3px; /* Margin between buttons */
+  min-width: 0; /* Ensure the button can shrink if needed */
+  width: auto; /* Allow the button's content to determine its width */
+  white-space: nowrap; /* Prevent button content from wrapping */
+  overflow: hidden; /* Hide content that overflows */
+  text-overflow: ellipsis; /* Show ellipsis for truncated content */
+}
+
+/* CSS for normal-sized buttons */
+.btn-normal {
+  width: auto; /* Lets the button size itself based on content */
+  margin-right: 5px; /* Optional margin between buttons */
+}
+
+
+.fixed-buttons {
+  position: fixed;
+  bottom: 10px; /* Adjust the distance from the bottom as needed */
+  left: 10px;
+  right: 10px; /* Adjust the distance from the right as needed */
+  z-index: 1000; /* Adjust the z-index as needed */
+  display: flex; /* Use flexbox to create a row layout */
+  justify-content: space-between; /* Distribute space between buttons */
+  margin: 0 -3px; /* Negative margin to offset the margin between buttons */
+}
+

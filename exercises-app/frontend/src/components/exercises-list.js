@@ -640,8 +640,7 @@ const ExercisesList = props => {
                                             >{exercise.name}</Card.Title>
                                             <Card.Text>
                                                 <Row>
-                                                    <Card.Text className="text-center">{exercise.equipment.join(' or ')}
-                                                        <br></br>Number: {exercises.findIndex(item => item._id === exercise._id)}</Card.Text>
+                                                    <Card.Text className="text-center">{exercise.equipment.join(' or ')}</Card.Text>
 
                                                     {/* How to perform the exercise */}
                                                     <div className="border border-dark rounded-2"

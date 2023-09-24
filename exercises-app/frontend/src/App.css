@@ -112,16 +112,53 @@
 
 .fixed-buttons2 {
   position: fixed;
-  bottom: 60px; /* Adjust the distance from the bottom as needed */
-  left: 10px;
+  bottom: 75px; /* Adjust the distance from the bottom as needed */
+  left: 9px;
   height: 30px;
-  right: 10px; /* Adjust the distance from the right as needed */
+  right: 9px; /* Adjust the distance from the right as needed */
   z-index: 1000; /* Adjust the z-index as needed */
-  display: flex; /* Use flexbox to create a row layout */
+  /* display: flex; /* Use flexbox to create a row layout
   align-items: center;
-  justify-content: space-between; /* Distribute space between buttons */
-  margin: 0 -3px; /* Negative margin to offset the margin between buttons */
-  border: 1px;
-  border-radius: 3%;
+  justify-content: space-between; /
+  border-radius: 3%; */
+  /* color:#61dafb; */
+  font-size: xx-large;
 }
 
+
+.Timer {
+  flex-grow: 1; /* Makes the button as wide as the available space */
+  margin: 0 3px; /* Margin between buttons */
+  min-width: 0; /* Ensure the button can shrink if needed */
+  width: auto; /* Allow the button's content to determine its width */
+  white-space: nowrap; /* Prevent button content from wrapping */
+  overflow: hidden; /* Hide content that overflows */
+  text-overflow: ellipsis; /* Show ellipsis for truncated content */
+  border-radius: 5px;
+  text-align: center;
+  font-weight: bold; /* Makes the text bold */
+  background-color: orange;
+  color: black;
+
+}
+
+
+.Pause {
+  flex-grow: 1; /* Makes the button as wide as the available space */
+  margin: 0 3px; /* Margin between buttons */
+  min-width: 0; /* Ensure the button can shrink if needed */
+  width: auto; /* Allow the button's content to determine its width */
+  white-space: nowrap; /* Prevent button content from wrapping */
+  overflow: hidden; /* Hide content that overflows */
+  text-overflow: ellipsis; /* Show ellipsis for truncated content */
+  border-radius: 5px;
+  text-align: center;
+  font-weight: bold; /* Makes the text bold */
+  background-color:grey;
+  color: orange
+}
+
+#emptyholder{
+  height: 110px;
+  width: max-content;
+}

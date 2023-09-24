@@ -25,7 +25,7 @@ const ExercisesList = props => {
     const [equipments, setEquipments] = useState([])
 
     const [open, setOpen] = useState({});//collapse
-    const [selectedLevels, setSelectedLevels] = useState([2])
+    const [selectedLevels, setSelectedLevels] = useState([1,2])
     const levels = [1, 2, 3, 4]
 
     //Intervall settings
@@ -502,12 +502,14 @@ const ExercisesList = props => {
                             className={"fixed-buttons2"}>
 
                             {trainStatus === "Started" || trainStatus === "Paused" ? (
-                                <Button
-                                    type="button"
-                                    className={"btn-wide bg-warning"}
-                                    variant={"outline-dark"}>
+                                //<Button
+                                    //type="button"
+                                    //className={"btn-wide bg-warning"}
+                                    //variant={"outline-dark"}
+                                  //  >
                                     <Timer excItemNum={excItemNum} setExcItemNum={setExcItemNum} TimerVar={countTimer} StatusUser={trainStatus} PauseVar={countPause} MaxExcItem={count} />
-                                </Button>) : null}
+                                //</Button>) 
+                                ): null}
                             {/* // Active excItemNum = {excItemNum}
 //                         <p>{trainStatus}</p> */}
 
@@ -607,6 +609,8 @@ const ExercisesList = props => {
                                                                         : 'dark'
                                         }
                                         style={{
+                                            // left: 10px,
+                                            // right: 10 px,
                                             width: '20rem',
                                             margin: '5px',
 
@@ -659,6 +663,7 @@ const ExercisesList = props => {
                                                             </div>
                                                         </Collapse></div>
                                                 </Row>
+                                                
 
 
                                             </Card.Text>
@@ -667,6 +672,12 @@ const ExercisesList = props => {
                                             {/* <Link to ={"/exercises/"+exercise._id}>View Reviews</Link> */}
                                         </Card.Body>
                                     </Card>
+                                    <Row>
+                                                    {exercises.findIndex(item => item._id === exercise._id) === count - 1 ? 
+                                                    <div id="emptyholder">
+                                                        </div>
+                                                        :null}
+                                                </Row>
                                 </Col>
                             ))
                             }

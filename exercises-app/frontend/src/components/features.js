@@ -78,18 +78,18 @@ export function Timer({ TimerVar, StatusUser, PauseVar, MaxExcItem, excItemNum, 
   }, [remainingTime, StatusUser, TimerVar, PauseVar]);
 
   return (
-    <div>
-      {statusProgress === "work" && !(StatusUser === "Stopped" || StatusUser === "Prep") ? (
-        <div>
-          Excercising left: {Math.floor(remainingTime / 1000)}.{Math.floor((remainingTime % 1000) / 100)} s
+    // <div>
+      statusProgress === "work" && !(StatusUser === "Stopped" || StatusUser === "Prep") ? (
+        <div className='Timer'>
+          Pause in {Math.floor(remainingTime / 1000)}.{Math.floor((remainingTime % 1000) / 100)} s
         </div>
       ) : (statusProgress === "pause" || statusProgress === "countdown") && !(StatusUser === "Stopped" || StatusUser === "Prep") ? (
-        <div>
-          Start in: {Math.floor(remainingTime / 1000)}.{Math.floor((remainingTime % 1000) / 100)} s
+        <div className='Pause'>
+          Start in {Math.floor(remainingTime / 1000)}.{Math.floor((remainingTime % 1000) / 100)} s
 
         </div>
-      ) : null}
+      ) : null
       
-    </div>
+    // </div>
   )
 }

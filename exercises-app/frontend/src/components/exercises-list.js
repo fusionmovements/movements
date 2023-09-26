@@ -379,7 +379,7 @@ const ExercisesList = props => {
                                             </Row>
 
                                             <Row className="align-items-center">
-                                                <Col><p style={{ textAlign: "center", fontWeight: "bold", fontSize: "20px" }}>Reps of each exercise</p></Col>
+                                                <Col><p style={{ textAlign: "center", fontWeight: "bold", fontSize: "20px" }}>Reps of each exercise (coming soon)</p></Col>
                                                 <Col className="d-flex justify-content-center">
 
                                                     <div>
@@ -394,7 +394,7 @@ const ExercisesList = props => {
                                             </Row>
 
                                             <Row className="align-items-center">
-                                                <Col><p style={{ textAlign: "center", fontWeight: "bold", fontSize: "20px" }}>Sets</p></Col>
+                                                <Col><p style={{ textAlign: "center", fontWeight: "bold", fontSize: "20px" }}>Sets (coming soon)</p></Col>
                                                 <Col className="d-flex justify-content-center">
 
                                                     <div>
@@ -408,7 +408,7 @@ const ExercisesList = props => {
                                             </Row>
 
                                             <Row className="align-items-center">
-                                                <Col><p style={{ textAlign: "center", fontWeight: "bold", fontSize: "20px" }}>Pause between sets</p></Col>
+                                                <Col><p style={{ textAlign: "center", fontWeight: "bold", fontSize: "20px" }}>Pause between sets (coming soon)</p></Col>
                                                 <Col className="d-flex justify-content-center">
 
                                                     <div>

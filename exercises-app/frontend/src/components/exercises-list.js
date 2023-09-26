@@ -323,30 +323,7 @@ const ExercisesList = props => {
                                             </Col>
                                         </Row>
                                         <hr />
-                                        {/* <Row>
-                            <Form>
-                                <Row>
-                                    <div className="d-grid gap-2">
-                                        <Form.Group>
-                                            <Form.Control
-                                                type="text"
-                                                placeholder="Search by name"
-                                                value={searchName}
-                                                onChange={onChangeSearchName} />
-                                        </Form.Group>
-                                        <Button
-                                            className="my-button"
-                                            variant="primary"
-                                            type="button"
-                                            onClick={findByName}>
-                                            <Search />
-                                        </Button>
-                                    </div>
-                                    <Col>
-                                    </Col>
-                                </Row>
-                            </Form>
-                        </Row> */}
+                                 
 
 
                                         <Row>

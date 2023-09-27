@@ -12,7 +12,7 @@ import Card from 'react-bootstrap/Card';
 import { useRef } from 'react';//jumping to specific element
 import Collapse from 'react-bootstrap/Collapse'
 import { ThreeDots } from 'react-loader-spinner'
-import { Shuffle, Search, Settings, Play, Pause, Square } from 'lucide-react';
+import { Shuffle, Search, Settings, Play, Pause, Square, SkipForward, SkipBack } from 'lucide-react';
 import { shuffle, scrollToBottom, handleIncrement, Timer } from "./features"
 
 const ExercisesList = props => {
@@ -25,7 +25,7 @@ const ExercisesList = props => {
     const [equipments, setEquipments] = useState([])
 
     const [open, setOpen] = useState({});//collapse
-    const [selectedLevels, setSelectedLevels] = useState([1,2])
+    const [selectedLevels, setSelectedLevels] = useState([1, 2])
     const levels = [1, 2, 3, 4]
 
     //Intervall settings
@@ -323,7 +323,7 @@ const ExercisesList = props => {
                                             </Col>
                                         </Row>
                                         <hr />
-                                 
+
 
 
                                         <Row>
@@ -476,21 +476,53 @@ const ExercisesList = props => {
 
                         {/* <Col> */}
                         <div
-                            className={"fixed-buttons2"}>
+                            className={"fixed-buttons3"}>
 
                             {trainStatus === "Started" || trainStatus === "Paused" ? (
                                 //<Button
-                                    //type="button"
-                                    //className={"btn-wide bg-warning"}
-                                    //variant={"outline-dark"}
-                                  //  >
-                                    <Timer excItemNum={excItemNum} setExcItemNum={setExcItemNum} TimerVar={countTimer} StatusUser={trainStatus} PauseVar={countPause} MaxExcItem={count} />
+                                //type="button"
+                                //className={"btn-wide bg-warning"}
+                                //variant={"outline-dark"}
+                                //  >
+                                <Timer excItemNum={excItemNum} setExcItemNum={setExcItemNum} TimerVar={countTimer} StatusUser={trainStatus} PauseVar={countPause} MaxExcItem={count} />
                                 //</Button>) 
-                                ): null}
+                            ) : null}
                             {/* // Active excItemNum = {excItemNum}
 //                         <p>{trainStatus}</p> */}
 
                         </div>
+
+                        <div
+                            className={"fixed-buttons2"}>
+                            {(exercises.length > 0) ? (
+                                <Button
+                                    type="button"
+                                    className={"btn-wide bg-secondary"}
+                                    onClick={() => {
+                                        setExcItemNum((excItemNum > 0) ? excItemNum - 1 : excItemNum)
+                                        scrollToBottom(bottomEl);
+                                    }}
+                                    variant={"outline-dark"}
+                                >
+                                    {<SkipBack />}
+                                </Button>
+                            ) : null}
+
+                            {(exercises.length > 0) ? (
+                                <Button
+                                    type="button"
+                                    className={"btn-wide bg-secondary"}
+                                    onClick={() => {
+                                        setExcItemNum((excItemNum < count - 1) ? excItemNum + 1 : excItemNum)
+                                        scrollToBottom(bottomEl);
+                                    }}
+                                    variant={"outline-dark"}
+                                >
+                                    {<SkipForward />}
+                                </Button>
+                            ) : null}
+                        </div>
+
                         <div
                             className={"fixed-buttons"}>
 
@@ -539,6 +571,8 @@ const ExercisesList = props => {
                                 </Button>
                             ) : null}
 
+
+
                             {trainStatus === "Started" ? (
                                 <Button
                                     type="button"
@@ -551,7 +585,6 @@ const ExercisesList = props => {
                                     <Pause />
                                 </Button>
                             ) : null}
-
 
                         </div>
                         {/* </Col> */}
@@ -640,7 +673,7 @@ const ExercisesList = props => {
                                                             </div>
                                                         </Collapse></div>
                                                 </Row>
-                                                
+
 
 
                                             </Card.Text>
@@ -650,11 +683,11 @@ const ExercisesList = props => {
                                         </Card.Body>
                                     </Card>
                                     <Row>
-                                                    {exercises.findIndex(item => item._id === exercise._id) === count - 1 ? 
-                                                    <div id="emptyholder">
-                                                        </div>
-                                                        :null}
-                                                </Row>
+                                        {exercises.findIndex(item => item._id === exercise._id) === count - 1 ?
+                                            <div id="emptyholder">
+                                            </div>
+                                            : null}
+                                    </Row>
                                 </Col>
                             ))
                             }

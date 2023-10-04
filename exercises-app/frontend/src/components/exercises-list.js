@@ -446,6 +446,7 @@ const ExercisesList = props => {
                                             setExcItemNum(0)
                                             setViewEl(0)
                                             scrollToBottom(bottomEl)
+                                            
                                         }}
                                         className={"btn-wide bg-primary"}
 

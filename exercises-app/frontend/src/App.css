@@ -1,6 +1,6 @@
-.App {
+/* .App {
   text-align: center;
-}
+} */
 
 .App-logo {
   height: 40vmin;
@@ -13,7 +13,7 @@
   }
 }
 
-.App-header {
+/* .App-header {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -22,20 +22,20 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
-}
+} */
 
-.App-link {
+/* .App-link {
   color: #61dafb;
-}
+} */
 
-@keyframes App-logo-spin {
+/* @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
   }
-}
+} */
 
 
 
@@ -112,7 +112,7 @@
 
 .fixed-buttons2 {
   position: fixed;
-  bottom: 55px; /* Adjust the distance from the bottom as needed */
+  bottom: 60px; /* Adjust the distance from the bottom as needed */
   left: 10px;
   right: 10px; /* Adjust the distance from the right as needed */
   z-index: 1000; /* Adjust the z-index as needed */
@@ -122,20 +122,21 @@
   align-items: center;
 }
 
-.fixed-buttons3 {
+.fixed-buttons3a {
   position: fixed;
-  bottom: 118px; /* Adjust the distance from the bottom as needed */
+  bottom: 110px; /* Adjust the distance from the bottom as needed */
   left: 9px;
-  height: 30px;
   right: 9px; /* Adjust the distance from the right as needed */
   z-index: 1000; /* Adjust the z-index as needed */
-  /* display: flex; /* Use flexbox to create a row layout
-  align-items: center;
-  justify-content: space-between; /
-  border-radius: 3%; */
-  /* color:#61dafb; */
+  display: flex;
+  align-items: flex-end; /* Align items to the bottom */
+  justify-content: space-between;
+  border-radius: 3%;
+  color: #61dafb;
   font-size: xx-large;
 }
+
+
 
 
 .Timer {
@@ -173,4 +174,37 @@
 #emptyholder{
   height: 148px;
   width: max-content;
+
+}
+
+
+
+
+
+
+/* Gridsystem  */
+
+.basic-grid{
+  display: grid;
+  gap: 1rem;
+
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+}
+
+.card_one {
+  display: flex;
+  align-items: center; /* Vertically center content */
+  justify-content: center; /* Horizontally center content */
+  background-color: grey;
+  font-size: 2rem;
+  color: white;
+  height: 100%;
+  width: 100%;
+  border-radius: 4px;
+  transition: all 500ms;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-3px) scale(1.1);
 }

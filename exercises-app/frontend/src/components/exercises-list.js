@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ExerciseDataService from "../services/exercises.js"
 import "../App.css";
 
-import Form from 'react-bootstrap/Form';
+
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Col from 'react-bootstrap/Col';
@@ -12,15 +12,14 @@ import Card from 'react-bootstrap/Card';
 import { useRef } from 'react';//jumping to specific element
 import Collapse from 'react-bootstrap/Collapse'
 import { ThreeDots } from 'react-loader-spinner'
-import { Shuffle, Search, Settings, Play, Pause, Square, SkipForward, SkipBack } from 'lucide-react';
-import { shuffle, scrollToBottom, handleIncrement, Timer } from "./features"
+import { Shuffle, Search, Settings, Play, Pause, Square, SkipForward, SkipBack, PenSquare, CheckSquare, CornerRightUp, CornerLeftDown, RefreshCw } from 'lucide-react';
+import { shuffle, scrollToBottom, handleIncrement, Timer, getButtonVariant } from "./features"
 
 const ExercisesList = props => {
     const [loading, setLoading] = useState(false)
 
 
     const [exercises, setExercises] = useState([])
-    const [searchName, setSearchName] = useState("")
     const [groups, setGroups] = useState(["All Groups"])
     const [equipments, setEquipments] = useState([])
 
@@ -30,8 +29,8 @@ const ExercisesList = props => {
 
     //Intervall settings
     const [count, setCount] = useState(5);
-    const [countTimer, setCountTimer] = useState(30);//Time per Exc.
-    const [countPause, setCountPause] = useState(15);//Pause Time
+    const [countTimer, setCountTimer] = useState(20);//Time per Exc.
+    const [countPause, setCountPause] = useState(10);//Pause Time
     const [countReps, setCountReps] = useState(3);//Number of Reps
     const [countSets, setCountSets] = useState(4);//Number of Sets
     const [countPausebSets, setCountPausebSets] = useState(45);//Pause Time betw. Sets
@@ -59,13 +58,38 @@ const ExercisesList = props => {
         }
     }
 
+    //moving exercises up and down:
+    const moveExerciseUp = (index) => {
+        if (index > 0) {
+            const updatedExercises = [...exercises];
+            const temp = updatedExercises[index];
+            updatedExercises[index] = updatedExercises[index - 1];
+            updatedExercises[index - 1] = temp;
+            setExercises(updatedExercises);
+            setViewEl(index - 1);
 
+        }
+    };
+
+    const moveExerciseDown = (index) => {
+        if (index < exercises.length - 1) {
+            const updatedExercises = [...exercises];
+            const temp = updatedExercises[index];
+            updatedExercises[index] = updatedExercises[index + 1];
+            updatedExercises[index + 1] = temp;
+            setExercises(updatedExercises);
+            setViewEl(index + 1);
+        }
+    };
+    //reordering elements
+    const [viewEl, setViewEl] = useState(0);
 
     //for Jumping to exercises bottomEl
     const bottomEl = useRef(null);
     useEffect(() => {
         scrollToBottom(bottomEl);
-    }, [exercises, excItemNum]);
+        // });
+    }, [exercises, excItemNum, viewEl]);
 
 
 
@@ -82,11 +106,6 @@ const ExercisesList = props => {
         retrieveEquipments()
     }, [])
 
-    const retrieveExercises = () => {//for findByGroup
-        ExerciseDataService.getAll().then(response => {
-            setExercises(response.data.exercises)
-        }).catch(e => { console.log(e) })
-    }
 
     //get all groups
     const retrieveGroups = () => {
@@ -113,34 +132,6 @@ const ExercisesList = props => {
             })
     }
 
-    //syncs the name with the form field 
-    const onChangeSearchName = e => {
-        const searchName = e.target.value
-        setSearchName(searchName);
-    }
-
-    const find = (query, by) => {
-        ExerciseDataService.find(query, by)
-            .then(res => {
-                const shuffled = shuffle([...res.data.exercises]); // Create a shuffled copy of the exercises
-                setExercises(shuffled); // Update the state with the shuffled exercises
-                setExercises(res.data.exercises)
-            }).catch(e => {
-                console.log(e)
-            })
-    }
-
-    // const find2 = (query1, by1, query2, by2) => {
-    //     ExerciseDataService.find2(query1, by1, query2, by2)
-    //         .then(res => {
-    //             const shuffled = shuffle([...res.data.exercises]); // Create a shuffled copy of the exercises
-    //             setExercises(shuffled); // Update the state with the shuffled exercises
-    //             //setExercises(res.data.exercises)
-    //         }).catch(e => {
-    //             console.log(e)
-    //         })
-    // }
-
     const find3 = (query1, by1, query2, by2, query3, by3) => {
         ExerciseDataService.find3(query1, by1, query2, by2, query3, by3, count)
             .then(res => {
@@ -152,17 +143,50 @@ const ExercisesList = props => {
             })
     }
 
-    const findByName = () => {
-        find(searchName, "name")
+    // const findexchangesingle = (query1, by1, query2, by2, query3, by3, index) => {
+    //     ExerciseDataService.find3(query1, by1, query2, by2, query3, by3, 1)
+    //         .then(res => {
+    //             const newExercise = res.data.exercises[0];
+    //             const newExercises = [...exercises];
+    //             newExercises[index] = newExercise;
+    //             setExercises(newExercises); // Update the state with the shuffled exercises
+    //             //setExercises(res.data.exercises)
+    //         }).catch(e => {
+    //             console.log(e)
+    //         })
+    // }
+
+    const findexchangesingle = (query1, by1, query2, by2, query3, by3, index) => {
+        const findUniqueExercise = async () => {
+            while (true) {
+                try {
+                    const res = await ExerciseDataService.find3(query1, by1, query2, by2, query3, by3, 1);
+                    const newExercise = res.data.exercises[0]; // Get the first exercise from the response
+
+                    // Check if the newExercise._id does not match any existing _id
+                    const isIdUnique = !exercises.some(exercise => exercise._id === newExercise._id);
+
+                    if (isIdUnique) {
+                        const newExercises = [...exercises];
+                        newExercises[index] = newExercise;
+                        setExercises(newExercises); // Update the state with the new exercise
+                        break; // Exit the loop if a unique exercise is found
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+        };
+
+        findUniqueExercise();
     }
 
+
     const findByGroupEquipmentArray = () => {
-        if (selectedGroups === "All Groups") {
-            retrieveExercises()
-        }
-        else {
-            find3(selectedGroups, "groups", selectedEquipments, "equipments", selectedLevels, "levels")
-        }
+        find3(selectedGroups, "groups", selectedEquipments, "equipments", selectedLevels, "levels")
+    }
+    const findByGroupEquipmentArrayExchangeSingle = (index) => {
+        findexchangesingle(selectedGroups, "groups", selectedEquipments, "equipments", selectedLevels, "levels", index)
     }
 
 
@@ -189,18 +213,15 @@ const ExercisesList = props => {
     };
 
     return (
-
         <div>
-            {
-                loading ?
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                        <ThreeDots color={'#1384db'} loading={loading} size={150} />
-                    </div>
-                    :
+            {loading ?
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                    <ThreeDots color={'#1384db'} loading={loading} size={150} />
+                </div>
+                :
+                <div>
                     <Container>
-                        <p></p>
-                        <p></p>
-                        <p style={{ textAlign: "center", fontWeight: "bold", fontSize: "20px" }}>Choose categories</p>
+                        <p></p><p></p><p style={{ textAlign: "center", fontWeight: "bold", fontSize: "20px" }}>Choose categories</p>
                         <Row>
                             <Col>
                                 {groups.map(group => (
@@ -209,27 +230,7 @@ const ExercisesList = props => {
                                         key={group}
                                         style={{ margin: "3px" }}
                                         type="checkbox"
-                                        variant={
-                                            selectedGroups.length === 0
-                                                ? 'outline-dark'
-                                                : selectedGroups.includes(group)
-                                                    ? group === 'cardio'
-                                                        ? 'primary'
-                                                        : group === 'leg'
-                                                            ? 'secondary'
-                                                            : group === 'core'
-                                                                ? 'success'
-                                                                : group === 'push'
-                                                                    ? 'warning'
-                                                                    : group === 'pull'
-                                                                        ? 'danger'
-                                                                        : group === 'mobility'
-                                                                            ? 'info'
-                                                                            : group === 'walk'
-                                                                                ? 'dark'
-                                                                                : 'outline-dark'
-                                                    : 'outline-dark'
-                                        }
+                                        variant={getButtonVariant(selectedGroups, group)}
                                         value={group}
                                         onClick={() => {
                                             handleGroupToggle(group);
@@ -240,14 +241,7 @@ const ExercisesList = props => {
                                 ))}
 
                             </Col>
-                        </Row>
-                        <p></p>
-
-
-
-
-
-                        <p></p>
+                        </Row><p></p><p></p>
                         <Row>
                             <div className="d-grid gap-2">
 
@@ -284,16 +278,12 @@ const ExercisesList = props => {
                                                     {/* <div>Selected Buttons: {selectedLevels.join(', ')}</div> */}
                                                 </div>
                                             </Col>
-                                            {/* </Row> */}
-                                            {/* Choice Chips Equipments */}
-                                            {/* <p></p> */}
-                                            {/* <Row> */}
                                             <Col className="d-flex justify-content-center">
                                                 <div>
                                                     <ButtonGroup>
-                                                        <Button variant="secondary" size="md" onClick={() => handleIncrement(count, 1, 12, -1, setCount)}>-</Button>
+                                                        <Button variant="secondary" size="md" onClick={() => handleIncrement(count, 1, 20, -1, setCount)}>-</Button>
                                                         <Button variant="outline-dark" size="md"> {count} </Button>
-                                                        <Button variant="secondary" size="md" onClick={() => handleIncrement(count, 1, 12, 1, setCount)}>+</Button>
+                                                        <Button variant="secondary" size="md" onClick={() => handleIncrement(count, 1, 20, 1, setCount)}>+</Button>
                                                     </ButtonGroup>
                                                 </div>
                                             </Col>
@@ -302,7 +292,6 @@ const ExercisesList = props => {
                                         <p style={{ textAlign: "center", fontWeight: "bold", fontSize: "20px" }}>Choose your equipment</p>
                                         <Row>
                                             <Col>
-
                                                 {equipments.map(equipment => (
                                                     <Button
                                                         className="my-button"
@@ -356,7 +345,7 @@ const ExercisesList = props => {
                                             </Row>
 
                                             <Row className="align-items-center">
-                                                <Col><p style={{ textAlign: "center", fontWeight: "bold", fontSize: "20px" }}>Reps of each exercise (coming soon)</p></Col>
+                                                <Col><p style={{ textAlign: "center", fontWeight: "bold", fontSize: "20px" }}>Reps of each exercise</p></Col>
                                                 <Col className="d-flex justify-content-center">
 
                                                     <div>
@@ -408,13 +397,11 @@ const ExercisesList = props => {
                                 )}
                             </div>
                         </Row>
-
-
-                        {/* <p></p> */}
+                        <p></p>
                         <Row>
                             <Col>
                                 <div className="d-grid gap-2">
-                                    <div ref={trainStatus === "Prep" ? bottomEl : null}></div>
+                                    {/* <div ref={trainStatus === "Prep" ? bottomEl : null}></div> */}
                                     <Button
                                         //class = "btn btn-default btn-block"
                                         variant="primary"
@@ -441,52 +428,58 @@ const ExercisesList = props => {
                         <p></p>
 
 
-                        {/* <Col>
-                                <div className="d-grid gap-2"
-                                    sticky="top">
-                                    {trainStatus === "Prep" || trainStatus === "Stopped" || trainStatus === "Paused" ?
-                                        <Button
-                                            // variant={trainStarted ? "primary" : "outline-primary"}
-                                            type="button"
-                                            onClick={() => setTrainStatus("Started")}
-                                        >
-                                            {<Play />}
-                                        </Button>
-                                        : null}
-                                    {trainStatus === "Started" ?
-                                        <Button
-                                            // variant={trainStarted ? "primary" : "outline-primary"}
-                                            type="button"
-                                            onClick={() => setTrainStatus("Paused")}
-                                        >
-                                            <Pause />
-                                        </Button>
-                                        : null}
-                                    {trainStatus === "Started" || trainStatus === "Paused" ?
-                                        <Button
-                                            // variant={trainStarted ? "primary" : "outline-primary"}
-                                            type="button"
-                                            onClick={() => setTrainStatus("Stopped")}
-                                        >
-                                            <Square />
-                                        </Button>
-                                        : null}
-                                </div>
-                            </Col> */}
-
-                        {/* <Col> */}
                         <div
-                            className={"fixed-buttons3"}>
+                            className={"fixed-buttons3a"}>
+                            {(exercises.length > 0 || trainStatus === "Stopped") && trainStatus === "Prep" ? (
+                                <Button
+                                    type="button"
+                                    className={"btn-wide bg-primary"}
+                                    onClick={() => {
+                                        //scrollToBottom();
+                                        const shuffled = shuffle([...exercises]); // Create a shuffled copy of the exercises
+                                        setExercises(shuffled); // Update the state with the shuffled exercises
+                                    }}
+                                    variant={"outline-dark"}
+                                >
+                                    <Shuffle />
+                                </Button>) : null
+                            }
+
 
                             {trainStatus === "Started" || trainStatus === "Paused" ? (
-                                //<Button
-                                //type="button"
-                                //className={"btn-wide bg-warning"}
-                                //variant={"outline-dark"}
-                                //  >
-                                <Timer excItemNum={excItemNum} setExcItemNum={setExcItemNum} TimerVar={countTimer} StatusUser={trainStatus} PauseVar={countPause} MaxExcItem={count} />
-                                //</Button>) 
-                            ) : null}
+                                <Timer excItemNum={excItemNum} setExcItemNum={setExcItemNum} TimerVar={countTimer} StatusUser={trainStatus} PauseVar={countPause} MaxExcItem={count} viewEl={viewEl} setViewEl={setViewEl} countRepsMax={countReps} />
+                            ) :
+                                // <Pen setTrainStatus={setTrainStatus} trainStatus={trainStatus} setExcItemNum={setExcItemNum} excItemNum={excItemNum} setViewEl={setViewEl} viewEl={viewEl} bottomEl={bottomEl} scrollToBottom={scrollToBottom} />
+                                ((trainStatus === "Stopped" || trainStatus === "Prep") && exercises.length > 0 ?
+                                    <Button
+                                        type="button"
+                                        onClick={() => {
+                                            setTrainStatus("Change")
+                                            setExcItemNum(0)
+                                            setViewEl(0)
+                                            scrollToBottom(bottomEl)
+                                        }}
+                                        className={"btn-wide bg-primary"}
+
+                                        variant={"outline-dark"}>
+                                        <PenSquare />
+                                    </Button> :
+                                    (trainStatus === "Change" ?
+                                        <Button
+                                            type="button"
+                                            onClick={() => {
+                                                setTrainStatus("Prep")
+                                                setExcItemNum(0)
+                                                setViewEl(0)
+                                                scrollToBottom(bottomEl)
+                                            }}
+                                            className={"btn-wide bg-success"}
+
+                                            variant={"outline-dark"}>
+                                            <CheckSquare />
+                                        </Button> : null)
+                                )
+                            }
                             {/* // Active excItemNum = {excItemNum}
 //                         <p>{trainStatus}</p> */}
 
@@ -499,7 +492,10 @@ const ExercisesList = props => {
                                     type="button"
                                     className={"btn-wide bg-secondary"}
                                     onClick={() => {
-                                        setExcItemNum((excItemNum > 0) ? excItemNum - 1 : excItemNum)
+                                        setExcItemNum((excItemNum > 0) ? excItemNum - 1 : excItemNum);
+                                        setViewEl(excItemNum)
+                                        setViewEl((viewEl > 0) ? viewEl - 1 : viewEl);
+
                                         scrollToBottom(bottomEl);
                                     }}
                                     variant={"outline-dark"}
@@ -513,7 +509,9 @@ const ExercisesList = props => {
                                     type="button"
                                     className={"btn-wide bg-secondary"}
                                     onClick={() => {
-                                        setExcItemNum((excItemNum < count - 1) ? excItemNum + 1 : excItemNum)
+                                        setExcItemNum((excItemNum < count - 1) ? excItemNum + 1 : excItemNum);
+                                        setViewEl(excItemNum);
+                                        setViewEl((viewEl < count - 1) ? viewEl + 1 : viewEl);
                                         scrollToBottom(bottomEl);
                                     }}
                                     variant={"outline-dark"}
@@ -533,6 +531,7 @@ const ExercisesList = props => {
                                     onClick={() => {
                                         setTrainStatus("Stopped")
                                         setExcItemNum(0)
+                                        setViewEl(0)
                                         scrollToBottom(bottomEl)
                                     }}
                                     className={"btn-wide bg-danger"}
@@ -541,20 +540,7 @@ const ExercisesList = props => {
                                 </Button>
                             ) : null}
 
-                            {(exercises.length > 0 || trainStatus === "Stopped" || trainStatus === "Paused") && !(trainStatus === "Started") ? (
-                                <Button
-                                    type="button"
-                                    className={"btn-wide bg-primary"}
-                                    onClick={() => {
-                                        //scrollToBottom();
-                                        const shuffled = shuffle([...exercises]); // Create a shuffled copy of the exercises
-                                        setExercises(shuffled); // Update the state with the shuffled exercises
-                                    }}
-                                    variant={"outline-dark"}
-                                >
-                                    <Shuffle />
-                                </Button>) : null
-                            }
+
 
                             {(exercises.length > 0 || trainStatus === "Stopped" || trainStatus === "Paused") && !(trainStatus === "Started") ? (
                                 <Button
@@ -594,10 +580,12 @@ const ExercisesList = props => {
                         {/* <br></br> */}
 
                         {/* <hr /> */}
+
                         <Row>
-                            {exercises.map((exercise) => (
+                            {exercises.map((exercise, index) => (
                                 <Col key={exercise._id}>
-                                    <div ref={excItemNum === exercises.findIndex(item => item._id === exercise._id) ? bottomEl : null}></div>
+                                    <div ref={
+                                        (exercises.findIndex(item => item._id === exercise._id) === viewEl) ? bottomEl : null}></div>
 
                                     <Card
                                         className={"text-center mx-auto border-2"}
@@ -619,8 +607,6 @@ const ExercisesList = props => {
                                                                         : 'dark'
                                         }
                                         style={{
-                                            // left: 10px,
-                                            // right: 10 px,
                                             width: '20rem',
                                             margin: '5px',
 
@@ -647,31 +633,34 @@ const ExercisesList = props => {
 
                                         {/* <Card.Img src={exercise.poster+"/100px180"} /> */}
                                         <Card.Body>
-                                            <Card.Title
-                                                style={{
+                                            <Card.Title>
+                                                {exercise.name}
+                                            </Card.Title>
 
-                                                }}
-                                            >{exercise.name}</Card.Title>
                                             <Card.Text>
                                                 <Row>
                                                     <Card.Text className="text-center">{exercise.equipment.join(' or ')}</Card.Text>
 
                                                     {/* How to perform the exercise */}
-                                                    <div className="border border-dark rounded-2"
-                                                        onClick={() => handleCollapse(exercise._id)}>how to
-                                                        <Collapse in={open[exercise._id]}>
-                                                            <div key={exercise._id} id="example-collapse-text" className="collapsedText">
-                                                                {exercise.howto ? (
-                                                                    <ul style={{ textAlign: 'left', listStyleType: 'disc', paddingLeft: '20px' }}>
-                                                                        {exercise.howto.map((step, index) => (
-                                                                            <li key={index}>{step}</li>
-                                                                        ))}
-                                                                    </ul>
-                                                                ) : (
-                                                                    <p>explanation coming soon.</p>
-                                                                )}
-                                                            </div>
-                                                        </Collapse></div>
+
+                                                    {!(trainStatus === "Change") ?
+                                                        <div className="border border-dark rounded-2"
+                                                            onClick={() => handleCollapse(exercise._id)}>how to
+                                                            <Collapse in={open[exercise._id]}>
+                                                                <div key={exercise._id} id="example-collapse-text" className="collapsedText">
+                                                                    {exercise.howto ? (
+                                                                        <ul style={{ textAlign: 'left', listStyleType: 'disc', paddingLeft: '20px' }}>
+                                                                            {exercise.howto.map((step, index) => (
+                                                                                <li key={index}>{step}</li>
+                                                                            ))}
+                                                                        </ul>
+                                                                    ) : (
+                                                                        <p>explanation coming soon.</p>
+                                                                    )}
+                                                                </div>
+                                                            </Collapse></div> : null}
+
+
                                                 </Row>
 
 
@@ -680,6 +669,25 @@ const ExercisesList = props => {
 
                                             {/* <Card.Text>{exercise.plot}</Card.Text> */}
                                             {/* <Link to ={"/exercises/"+exercise._id}>View Reviews</Link> */}
+
+                                            <div key={index}>
+                                                {trainStatus === "Change" ? (
+                                                    <>
+                                                        <Row>
+                                                            <Col>
+                                                                <ButtonGroup style={{ width: '100%', justifyContent: 'space-between' }}>
+                                                                    <Button onClick={() => { moveExerciseDown(index) }}><CornerLeftDown /></Button>
+                                                                    <Button onClick={() => { findByGroupEquipmentArrayExchangeSingle(index) }}><RefreshCw /></Button>
+                                                                    <Button onClick={() => { moveExerciseUp(index) }}><CornerRightUp /></Button>
+                                                                </ButtonGroup>
+                                                            </Col>
+                                                            <p></p>
+                                                        </Row>
+                                                        <p>Excercise: {index + 1} / {count}</p>
+                                                    </>
+                                                ) : null}
+                                            </div>
+
                                         </Card.Body>
                                     </Card>
                                     <Row>
@@ -692,10 +700,28 @@ const ExercisesList = props => {
                             ))
                             }
                         </Row>
+
+
                     </Container>
 
+
+                    {/* <section className="basic-grid">
+                        <div class="card_one">1</div>
+                        <div className="card_one">2</div>
+                        <div className="card_one">3</div>
+                        <div className="card_one">4</div>
+                        <div className="card_one">5</div>
+                        <div className="card_one">6</div>
+                        <div className="card_one">7</div>
+                        <div className="card_one">8</div>
+                        <div className="card_one">9</div>
+                        <div className="card_one">10</div>
+                        <div className="card_one">11</div>
+                        <div className="card_one">12</div>
+                    </section> */}
+                </div>
             }
-        </div >
+        </div>
     );
 }
 

@@ -67,7 +67,6 @@ const ExercisesList = props => {
             updatedExercises[index - 1] = temp;
             setExercises(updatedExercises);
             setViewEl(index - 1);
-
         }
     };
 
@@ -88,6 +87,7 @@ const ExercisesList = props => {
     const bottomEl = useRef(null);
     useEffect(() => {
         scrollToBottom(bottomEl);
+    
         // });
     }, [exercises, excItemNum, viewEl]);
 
@@ -143,19 +143,6 @@ const ExercisesList = props => {
             })
     }
 
-    // const findexchangesingle = (query1, by1, query2, by2, query3, by3, index) => {
-    //     ExerciseDataService.find3(query1, by1, query2, by2, query3, by3, 1)
-    //         .then(res => {
-    //             const newExercise = res.data.exercises[0];
-    //             const newExercises = [...exercises];
-    //             newExercises[index] = newExercise;
-    //             setExercises(newExercises); // Update the state with the shuffled exercises
-    //             //setExercises(res.data.exercises)
-    //         }).catch(e => {
-    //             console.log(e)
-    //         })
-    // }
-
     const findexchangesingle = (query1, by1, query2, by2, query3, by3, index) => {
         const findUniqueExercise = async () => {
             while (true) {
@@ -177,9 +164,11 @@ const ExercisesList = props => {
                 }
             }
         };
-
         findUniqueExercise();
+        setViewEl(index);
     }
+
+
 
 
     const findByGroupEquipmentArray = () => {
@@ -449,7 +438,6 @@ const ExercisesList = props => {
                             {trainStatus === "Started" || trainStatus === "Paused" ? (
                                 <Timer excItemNum={excItemNum} setExcItemNum={setExcItemNum} TimerVar={countTimer} StatusUser={trainStatus} PauseVar={countPause} MaxExcItem={count} viewEl={viewEl} setViewEl={setViewEl} countRepsMax={countReps} />
                             ) :
-                                // <Pen setTrainStatus={setTrainStatus} trainStatus={trainStatus} setExcItemNum={setExcItemNum} excItemNum={excItemNum} setViewEl={setViewEl} viewEl={viewEl} bottomEl={bottomEl} scrollToBottom={scrollToBottom} />
                                 ((trainStatus === "Stopped" || trainStatus === "Prep") && exercises.length > 0 ?
                                     <Button
                                         type="button"
@@ -638,6 +626,7 @@ const ExercisesList = props => {
                                             </Card.Title>
 
                                             <Card.Text>
+                                                
                                                 <Row>
                                                     <Card.Text className="text-center">{exercise.equipment.join(' or ')}</Card.Text>
 
